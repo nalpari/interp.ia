@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Music } from "lucide-react";
+import Link from "next/link";
 
 interface TetrominoShape {
   shape: number[][];
@@ -408,7 +409,9 @@ export default function Tetris() {
         </Button>
       </div>
       <div className="flex gap-4 mt-4">
-        <Button variant="outline">Sign in</Button>
+        <Link href="/login">
+          <Button variant="outline">Sign in</Button>
+        </Link>
         <Button variant="outline">Sign up</Button>
       </div>
       <audio
