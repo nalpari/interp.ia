@@ -54,14 +54,14 @@ export default function DashboardLayout({
             <div className="flex">
               <div className="flex flex-shrink-0 items-center">
                 <Link href="/" className="text-2xl font-bold text-blue-600">
-                  SalesForge
+                  INTERP.IA
                 </Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <NavLink href="/">Dashboard</NavLink>
-                <NavLink href="/sales-reps">Sales Reps</NavLink>
-                <NavLink href="/analytics">Analytics</NavLink>
-                <NavLink href="/targets">Targets</NavLink>
+                <NavLink href="/dashboard">Dashboard</NavLink>
+                <NavLink href="/dashboard/projects">Projects</NavLink>
+                <NavLink href="/dashboard/analytics">Analytics</NavLink>
+                <NavLink href="/dashboard/targets">Targets</NavLink>
               </div>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -94,10 +94,10 @@ export default function DashboardLayout({
                     <span className="sr-only">Open user menu</span>
                     <Avatar>
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
-                        alt="@shadcn"
+                        src="https://interplug.s3.ap-northeast-2.amazonaws.com/member/0_cwqp3kMi86R5mVe6.webp"
+                        alt="@user1"
                       />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback>U1</AvatarFallback>
                     </Avatar>
                     <span className="ml-2 hidden text-sm font-medium text-gray-700 lg:block">
                       John Doe
@@ -113,11 +113,11 @@ export default function DashboardLayout({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
-                    <Link href="/profile">Profile</Link>
+                    <Link href="/dashboard/profile">Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
-                    <Link href="/settings">Settings</Link>
+                    <Link href="/dashboard/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />
