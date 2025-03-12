@@ -1,114 +1,61 @@
-"use client";
+import ExpandingCard from "@/components/ExpandingCard";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { toast } from "@/components/ui/use-toast";
-import { toast } from "sonner";
+const cards = [
+  {
+    title: "Card 1",
+    description:
+      "This is a longer description for Card 1. It contains more text to demonstrate the expanding effect when hovering over the card. You'll see the full content overlaying the image without causing any layout shifts. The card maintains its original size, but the content expands upwards.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    title: "Card 2",
+    description:
+      "Card 2 also has a detailed description. When you hover over this card, you'll be able to read all of this text without disturbing the layout of other cards on the page. This demonstrates how we can show more content by overlaying it on top of the image.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    title: "Card 3",
+    description:
+      "Here's the expansive content for Card 3. This text is initially hidden but becomes fully visible on hover, showcasing the smooth transition effect we've implemented. The description grows upwards, covering part of the image.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    title: "Card 4",
+    description:
+      "Card 4 joins the group with its own lengthy description. Hover to reveal the full text and observe how it doesn't affect the positioning of neighboring cards. The content expands within the card, maintaining the overall grid layout.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    title: "Card 5",
+    description:
+      "The fifth card in our grid also features an expanding description. This demonstrates how the effect works consistently across multiple items. Notice how the card's external dimensions remain unchanged as you hover.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+  {
+    title: "Card 6",
+    description:
+      "Last but not least, Card 6 rounds out our grid. Its description, like the others, expands smoothly on hover without disrupting the overall layout. This consistent behavior across all cards creates a polished user experience.",
+    image: "/placeholder.svg?height=200&width=400",
+  },
+];
 
-export default function SettingsPage() {
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [marketingEmails, setMarketingEmails] = useState(false);
-
-  const handleSaveGeneral = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Implement save logic here
-    // toast({
-    //   title: "Settings saved",
-    //   description: "Your general settings have been updated.",
-    // });
-    toast.success("Settings saved");
-  };
-
-  const handleSaveNotifications = () => {
-    // Implement save logic here
-    // toast({
-    //   title: "Notification settings saved",
-    //   description: "Your notification preferences have been updated.",
-    // });
-    toast.success("Notification settings saved");
-  };
-
+export default function ProjectsPage() {
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
-      <Tabs defaultValue="general">
-        <TabsList className="mb-4">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-        </TabsList>
-        <TabsContent value="general">
-          <Card>
-            <CardHeader>
-              <CardTitle>General Settings</CardTitle>
-              <CardDescription>
-                Manage your account settings and preferences.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSaveGeneral}>
-                <div className="grid w-full items-center gap-4">
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" />
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" placeholder="Your email" type="email" />
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit">Save Changes</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>
-                Manage how you receive notifications.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="email-notifications"
-                  checked={emailNotifications}
-                  onCheckedChange={setEmailNotifications}
-                />
-                <Label htmlFor="email-notifications">Email Notifications</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="marketing-emails"
-                  checked={marketingEmails}
-                  onCheckedChange={setMarketingEmails}
-                />
-                <Label htmlFor="marketing-emails">Marketing Emails</Label>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={handleSaveNotifications}>
-                Save Preferences
-              </Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+      <main className="container mx-auto p-4">
+        {/* <h1 className="text-3xl font-bold mb-6">Projects</h1> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cards.map((card, index) => (
+            <ExpandingCard
+              key={index}
+              title={card.title}
+              description={card.description}
+              image={card.image}
+            />
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
