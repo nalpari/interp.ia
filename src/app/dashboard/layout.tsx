@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/libs/utils";
 import Notifications from "@/components/Notifications";
 import { Search, ChevronDown, User, Settings, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
