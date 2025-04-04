@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { toast } from 'sonner'
@@ -32,7 +31,7 @@ const profileFormSchema = z.object({
       required_error: 'Please select an email to display.',
     })
     .email(),
-  bio: z.string().max(160).min(4),
+  // bio: z.string().max(160).min(4),
   urls: z
     .array(
       z.object({
@@ -45,16 +44,28 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I'm a software developer...",
+  // bio: "I'm a software developer...",
   urls: [{ value: 'https://example.com' }, { value: 'https://example2.com' }],
 }
 
+type UserInfo = {
+  data: UserState
+}
+
 export default function ProfilePage() {
-  const [avatar, setAvatar] = useState('https://interplug.s3.ap-northeast-2.amazonaws.com/member/0_cwqp3kMi86R5mVe6.webp')
+  // const [avatar, setAvatar] = useState('https://interplug.s3.ap-northeast-2.amazonaws.com/member/0_cwqp3kMi86R5mVe6.webp')
+  const cache = useQueryClient()
+  const userInfo = cache.getQueryData(['user', 'info']) as UserInfo
+  console.log('🚀 ~ ProfilePage ~ userInfo:', userInfo)
+  // const [avatar, setAvatar] = useState(userInfo?.data.image)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    // defaultValues,
+    defaultValues: {
+      username: userInfo?.data.name,
+      email: userInfo?.data.email,
+    },
     mode: 'onChange',
   })
 
@@ -73,10 +84,6 @@ export default function ProfilePage() {
       </pre>,
     )
   }
-
-  const cache = useQueryClient()
-  const userInfo = cache.getQueryData(['user', 'info']) as UserState
-  console.log('🚀 ~ data:', userInfo)
 
   return (
     <div className="space-y-6">
@@ -99,8 +106,8 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={avatar} alt="Avatar" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src={userInfo?.data.image} alt="Avatar" />
+                  <AvatarFallback>AV</AvatarFallback>
                 </Avatar>
                 <div>
                   <Button variant="outline" size="sm" className="mb-2">
@@ -139,7 +146,7 @@ export default function ProfilePage() {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="bio"
                     render={({ field }) => (
@@ -154,7 +161,7 @@ export default function ProfilePage() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                   <Button type="submit">Update profile</Button>
                 </form>
               </Form>

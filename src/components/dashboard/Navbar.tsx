@@ -19,7 +19,6 @@ import {
 import { signOut } from '@/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { getUser } from '@/api/user'
-import { UserState } from '@/store/useUserStore'
 
 interface NavLinkProps {
   href: string
