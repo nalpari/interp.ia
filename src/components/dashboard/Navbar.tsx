@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/libs/utils'
 import Notifications from '@/components/Notifications'
-import { Search, ChevronDown, User, Settings, LogOut } from 'lucide-react'
+import { Search, ChevronDown, User, Settings, LogOut, GalleryVerticalEnd } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -64,9 +64,12 @@ export default function Navbar(props: NavProps) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
             <div className="flex">
-              <div className="flex flex-shrink-0 items-center">
-                <Link href="/" className="text-2xl font-bold text-blue-600">
-                  INTERP.IA
+              <div className="flex gap-2 flex-shrink-0 items-center">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                  <GalleryVerticalEnd className="size-6" />
+                </div>
+                <Link href="/" className="flex text-2xl font-bold text-bold">
+                  <span className="flex">INTERP.IA</span>
                 </Link>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
