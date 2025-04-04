@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ReactQueryProviders from "@/providers/ReactQueryProvider";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -32,7 +33,9 @@ export default function RootLayout({
   return (
     <>
       <html lang="en" className="h-full bg-gray-100">
-        <body className={`${inter.className} h-full`}>{children}</body>
+        <body className={`${inter.className} h-full`}>
+          <ReactQueryProviders>{children}</ReactQueryProviders>
+        </body>
       </html>
     </>
   );
