@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type UserState = {
+export type UserState = {
   id: number
   email: string
   name: string
@@ -10,6 +10,8 @@ type UserState = {
   job: string
   phone: string
   isActive: boolean
+  setUser: (user: UserState) => void
+  resetUser: () => void
 }
 
 type InitialState = {

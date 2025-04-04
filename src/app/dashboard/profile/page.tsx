@@ -1,78 +1,62 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-// import { toast } from "@/components/ui/use-toast";
-import { toast } from "sonner";
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { toast } from 'sonner'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Label } from '@/components/ui/label'
+import { useQueryClient } from '@tanstack/react-query'
+import { UserState } from '@/store/useUserStore'
 
 const profileFormSchema = z.object({
   username: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters.",
+      message: 'Username must be at least 2 characters.',
     })
     .max(30, {
-      message: "Username must not be longer than 30 characters.",
+      message: 'Username must not be longer than 30 characters.',
     }),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: 'Please select an email to display.',
     })
     .email(),
   bio: z.string().max(160).min(4),
   urls: z
     .array(
       z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
+        value: z.string().url({ message: 'Please enter a valid URL.' }),
+      }),
     )
     .optional(),
-});
+})
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 const defaultValues: Partial<ProfileFormValues> = {
   bio: "I'm a software developer...",
-  urls: [{ value: "https://example.com" }, { value: "https://example2.com" }],
-};
+  urls: [{ value: 'https://example.com' }, { value: 'https://example2.com' }],
+}
 
 export default function ProfilePage() {
-  const [avatar, setAvatar] = useState(
-    "https://interplug.s3.ap-northeast-2.amazonaws.com/member/0_cwqp3kMi86R5mVe6.webp"
-  );
+  const [avatar, setAvatar] = useState('https://interplug.s3.ap-northeast-2.amazonaws.com/member/0_cwqp3kMi86R5mVe6.webp')
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
-    mode: "onChange",
-  });
+    mode: 'onChange',
+  })
 
   function onSubmit(data: ProfileFormValues) {
     // toast({
@@ -86,17 +70,19 @@ export default function ProfilePage() {
     toast.success(
       <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
         <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-      </pre>
-    );
+      </pre>,
+    )
   }
+
+  const cache = useQueryClient()
+  const userInfo = cache.getQueryData(['user', 'info']) as UserState
+  console.log('🚀 ~ data:', userInfo)
 
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Profile</h3>
-        <p className="text-sm text-muted-foreground">
-          This is how others will see you on the site.
-        </p>
+        <p className="text-sm text-muted-foreground">This is how others will see you on the site.</p>
       </div>
       <Tabs defaultValue="general" className="space-y-4">
         <TabsList>
@@ -108,9 +94,7 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>General Information</CardTitle>
-              <CardDescription>
-                Update your photo and personal details here.
-              </CardDescription>
+              <CardDescription>Update your photo and personal details here.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
@@ -122,16 +106,11 @@ export default function ProfilePage() {
                   <Button variant="outline" size="sm" className="mb-2">
                     Change Avatar
                   </Button>
-                  <p className="text-sm text-muted-foreground">
-                    JPG, GIF or PNG. Max size of 800K
-                  </p>
+                  <p className="text-sm text-muted-foreground">JPG, GIF or PNG. Max size of 800K</p>
                 </div>
               </div>
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="username"
@@ -141,10 +120,7 @@ export default function ProfilePage() {
                         <FormControl>
                           <Input placeholder="shadcn" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          This is your public display name. It can be your real
-                          name or a pseudonym.
-                        </FormDescription>
+                        <FormDescription>This is your public display name. It can be your real name or a pseudonym.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -158,10 +134,7 @@ export default function ProfilePage() {
                         <FormControl>
                           <Input placeholder="example@example.com" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          You can manage verified email addresses in your email
-                          settings.
-                        </FormDescription>
+                        <FormDescription>You can manage verified email addresses in your email settings.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -173,15 +146,10 @@ export default function ProfilePage() {
                       <FormItem>
                         <FormLabel>Bio</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Tell us a little bit about yourself"
-                            className="resize-none"
-                            {...field}
-                          />
+                          <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
                         </FormControl>
                         <FormDescription>
-                          You can <span>@mention</span> other users and
-                          organizations to link to them.
+                          You can <span>@mention</span> other users and organizations to link to them.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -197,9 +165,7 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>Password</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you'll be logged out.
-              </CardDescription>
+              <CardDescription>Change your password here. After saving, you'll be logged out.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -224,37 +190,28 @@ export default function ProfilePage() {
           <Card>
             <CardHeader>
               <CardTitle>Notifications</CardTitle>
-              <CardDescription>
-                Configure how you receive notifications.
-              </CardDescription>
+              <CardDescription>Configure how you receive notifications.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Switch id="marketing" />
                 <div className="space-y-1">
                   <Label htmlFor="marketing">Marketing emails</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Receive emails about new products, features, and more.
-                  </p>
+                  <p className="text-sm text-muted-foreground">Receive emails about new products, features, and more.</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <Switch id="social" />
                 <div className="space-y-1">
                   <Label htmlFor="social">Social notifications</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Receive notifications when someone mentions you or replies
-                    to your messages.
-                  </p>
+                  <p className="text-sm text-muted-foreground">Receive notifications when someone mentions you or replies to your messages.</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <Switch id="security" />
                 <div className="space-y-1">
                   <Label htmlFor="security">Security emails</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Receive emails about your account security and privacy.
-                  </p>
+                  <p className="text-sm text-muted-foreground">Receive emails about your account security and privacy.</p>
                 </div>
               </div>
             </CardContent>
@@ -265,5 +222,5 @@ export default function ProfilePage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

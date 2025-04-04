@@ -19,6 +19,7 @@ import {
 import { signOut } from '@/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { getUser } from '@/api/user'
+import { UserState } from '@/store/useUserStore'
 
 interface NavLinkProps {
   href: string
@@ -52,7 +53,7 @@ export default function Navbar(props: NavProps) {
     error,
     isPending,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['user', 'info'],
     queryFn: () => getUser(props.email),
     staleTime: 60 * 1000,
     retry: false,
