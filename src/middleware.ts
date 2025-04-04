@@ -19,5 +19,5 @@ export async function middleware(request: NextRequest) {
 // 2. /admin/* (exclude all routes under /admin)
 // 3. /_next/* (exclude Next.js static and image assets)
 export const config = {
-  matcher: ['/((?!login|admin|api|_next/static|_next/image|favicon.ico|placeholder.svg|interpia-login.svg).*)'],
+  matcher: ['/((?!login|signup|admin|api|_next/static|_next/image|favicon.ico|placeholder.svg|interpia-login.svg).*)'],
 }
