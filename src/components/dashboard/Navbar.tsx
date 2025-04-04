@@ -46,7 +46,7 @@ function NavLink({ href, children }: NavLinkProps) {
   )
 }
 
-export default function Nav(props: NavProps) {
+export default function Navbar(props: NavProps) {
   const {
     data: loginUser,
     error,
