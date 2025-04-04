@@ -77,6 +77,7 @@ export default function Navbar(props: NavProps) {
                 <NavLink href="/dashboard/projects">Projects</NavLink>
                 <NavLink href="/dashboard/analytics">Analytics</NavLink>
                 <NavLink href="/dashboard/targets">Targets</NavLink>
+                <NavLink href="/dashboard/sample">Sample</NavLink>
               </div>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
