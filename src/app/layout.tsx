@@ -19,11 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html lang="en" className="h-full bg-gray-100">
-        <body className={`h-full`}>
-          <ReactQueryProviders>{children}</ReactQueryProviders>
-        </body>
-      </html>
+      <ReactQueryProviders>
+        <html lang="en" className="h-full bg-gray-100">
+          <body className={`h-full`}>{children}</body>
+        </html>
+      </ReactQueryProviders>
     </>
   )
 }

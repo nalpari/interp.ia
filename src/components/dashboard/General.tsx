@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { TabsContent } from '../ui/tabs'
-import { UserState } from '@/store/useUserStore'
+import { UserState, useUserStore } from '@/store/useUserStore'
 import { userApi } from '@/api/user'
 
 export const profileFormSchema = z.object({
@@ -53,19 +53,20 @@ type UserInfo = {
 }
 
 export default function General() {
-  const cache = useQueryClient()
-  const userInfo = cache.getQueryData(['user', 'info']) as UserInfo
+  // const cache = useQueryClient()
+  // const userInfo = cache.getQueryData(['user', 'info']) as UserInfo
+  const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     // defaultValues,
     defaultValues: {
-      username: userInfo?.data.name,
-      email: userInfo?.data.email,
-      position: userInfo?.data.position,
-      department: userInfo?.data.department,
-      job: userInfo?.data.job,
-      phone: userInfo?.data.phone,
+      username: loginedUserInfo.name,
+      email: loginedUserInfo.email,
+      position: loginedUserInfo.position,
+      department: loginedUserInfo.department,
+      job: loginedUserInfo.job,
+      phone: loginedUserInfo.phone,
     },
     mode: 'onChange',
   })
@@ -100,7 +101,7 @@ export default function General() {
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src={userInfo?.data.image} alt="Avatar" />
+                <AvatarImage src={loginedUserInfo.image} alt="Avatar" />
                 <AvatarFallback>AV</AvatarFallback>
               </Avatar>
               <div>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/libs/utils'
@@ -19,6 +20,7 @@ import {
 import { signOut } from '@/api/auth'
 import { useQuery } from '@tanstack/react-query'
 import { userApi } from '@/api/user'
+import { useUserStore } from '@/store/useUserStore'
 
 interface NavLinkProps {
   href: string
@@ -46,7 +48,22 @@ function NavLink({ href, children }: NavLinkProps) {
   )
 }
 
+interface UserInfo {
+  id: string
+  name: string
+  email: string
+  image: string | null
+  position: string | null
+  department: string | null
+  job: string | null
+  phone: string | null
+  isActive: boolean
+  createDate: string | null
+  updateDate: string | null
+}
+
 export default function Navbar(props: NavProps) {
+  const { setUser } = useUserStore()
   const {
     data: loginUser,
     error,
@@ -57,6 +74,13 @@ export default function Navbar(props: NavProps) {
     staleTime: 60 * 60 * 1000,
     retry: false,
   })
+
+  useEffect(() => {
+    if (loginUser) {
+      console.log('🚀 ~ onSuccess: ~ data:', loginUser)
+      setUser({ loginedUserInfo: loginUser.data })
+    }
+  }, [loginUser])
 
   return (
     <>
