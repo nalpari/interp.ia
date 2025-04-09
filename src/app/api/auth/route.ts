@@ -8,11 +8,6 @@ export async function POST(request: Request) {
   const cookieStore = await cookies()
   const session = await getIronSession<SessionData>(cookieStore, sessionOptions)
 
-  console.log('🚀 ~ POST ~ isLoggedIn:', isLoggedIn)
-  console.log('🚀 ~ POST ~ refreshToken:', refreshToken)
-  console.log('🚀 ~ POST ~ accessToken:', accessToken)
-  console.log('🚀 ~ POST ~ email:', email)
-
   session.email = email
   session.accessToken = accessToken
   session.refreshToken = refreshToken
