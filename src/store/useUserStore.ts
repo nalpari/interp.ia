@@ -1,6 +1,18 @@
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
 
+export type LoginedUserInfo = {
+  id: number
+  email: string
+  name: string
+  image: string
+  position: string
+  department: string
+  job: string
+  phone: string
+  isActive: boolean
+}
+
 export type UserState = {
   loginedUserInfo: {
     id: number
