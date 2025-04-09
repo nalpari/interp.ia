@@ -52,7 +52,7 @@ export default function ProjectHeader() {
           </Badge>
         </div>
         <div className="flex items-center gap-2">
-          {user?.data?.id === project?.creator?.id && (
+          {user?.data?.loginedUserInfo.id === project?.creator?.loginedUserInfo.id && (
             <Button variant="destructive" onClick={handleDeleteProject}>
               <Trash /> Delete
             </Button>

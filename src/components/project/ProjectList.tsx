@@ -39,13 +39,13 @@ export default function ProjectList() {
   const router = useRouter()
 
   useEffect(() => {
-    if (user?.data?.id) {
+    if (user?.data?.loginedUserInfo.id) {
       setRequest((prev) => ({
         ...prev,
-        assigneeId: [user.data.id],
+        assigneeId: [user.data.loginedUserInfo.id],
       }))
     }
-  }, [user?.data?.id])
+  }, [user?.data?.loginedUserInfo.id])
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ['project-list', request],
