@@ -4,9 +4,18 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const email = searchParams.get('email')
+  const isActive = searchParams.get('isActive')
 
-  const response = await axiosInstance.get(`http://localhost:8080/api/users/${email}`)
-  console.log('🚀 ~ GET ~ response:', response)
+  if (email) {
+    const response = await axiosInstance.get(`http://localhost:8080/api/users/${email}`)
+    return NextResponse.json({ data: response.data })
+  }
 
+  if (isActive) {
+    const response = await axiosInstance.get(`http://localhost:8080/api/users?isActive=${isActive}`)
+    return NextResponse.json({ data: response.data })
+  }
+
+  const response = await axiosInstance.get(`http://localhost:8080/api/users`)
   return NextResponse.json({ data: response.data })
 }
