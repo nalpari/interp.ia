@@ -28,24 +28,21 @@ const initialRequest: ProjectListRequest = {
   endDateTo: null,
 }
 
-type UserInfo = {
-  data: UserState
-}
-
 export default function ProjectList() {
   const cache = useQueryClient()
-  const user = cache.getQueryData(['user', 'info']) as UserInfo
+  const userData = cache.getQueryData(['user', 'info']) as { data: UserState['loginedUserInfo'] } | undefined
   const [request, setRequest] = useState<ProjectListRequest>(initialRequest)
   const router = useRouter()
 
   useEffect(() => {
-    if (user?.data?.loginedUserInfo.id) {
+    if (userData?.data) {
+      console.log('🚀 ~ useEffect ~ user:', userData.data);
       setRequest((prev) => ({
         ...prev,
-        assigneeId: [user.data.loginedUserInfo.id],
+        assigneeId: [userData.data.id],
       }))
     }
-  }, [user?.data?.loginedUserInfo.id])
+  }, [userData])
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ['project-list', request],
