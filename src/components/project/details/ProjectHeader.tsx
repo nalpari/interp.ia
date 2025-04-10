@@ -12,16 +12,13 @@ import ProjectOverview from './ProjectOverview'
 import { Badge } from '@/components/ui/badge'
 import { Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { UserState } from '@/store/useUserStore'
-
-type UserInfo = {
-  data: UserState
-}
+import { LoginedUserInfo } from '@/store/useUserStore'
+import ProjectCalendar from './ProjectCalendar'
 
 export default function ProjectHeader() {
   const { id } = useParams()
-  const cache = useQueryClient()
-  const user = cache.getQueryData(['user', 'info']) as UserInfo
+  const queryClient = useQueryClient()
+  const user = (queryClient.getQueryData(['user', 'info']) as {data: LoginedUserInfo | undefined})?.data
   const {
     data: project,
     isLoading,
@@ -33,12 +30,14 @@ export default function ProjectHeader() {
   const [tab, setTab] = useState('overview')
   const router = useRouter()
 
+
   if (isLoading) {
     return <div>Loading...</div>
   }
 
   const handleDeleteProject = async () => {
     await deleteProject(Number(id))
+    queryClient.invalidateQueries({ queryKey: ['project-list'] })
     router.push('/dashboard/projects')
   }
 
@@ -52,7 +51,7 @@ export default function ProjectHeader() {
           </Badge>
         </div>
         <div className="flex items-center gap-2">
-          {user?.data?.loginedUserInfo.id === project?.creator?.loginedUserInfo.id && (
+          {user?.id === project?.creator.id && (
             <Button variant="destructive" onClick={handleDeleteProject}>
               <Trash /> Delete
             </Button>
@@ -71,6 +70,9 @@ export default function ProjectHeader() {
             <TabsTrigger value="board" className="flex-1 text-lg">
               Board
             </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex-1 text-lg">
+              Calendar
+            </TabsTrigger>
           </TabsList>
           {project && (
             <>
@@ -82,6 +84,9 @@ export default function ProjectHeader() {
               </TabsContent>
               <TabsContent value="board">
                 <ProjectBoard project={project} />
+              </TabsContent>
+              <TabsContent value="calendar">
+                <ProjectCalendar project={project} />
               </TabsContent>
             </>
           )}

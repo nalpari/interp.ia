@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { useProjectFormStore } from "@/store/useProjectFormStore";
 import { getUsers } from "@/api/user";
 import { useState } from "react";
-import { UserState } from "@/store/useUserStore";
+import { LoginedUserInfo } from "@/store/useUserStore";
 import { CalendarIcon, Check, X } from "lucide-react";
 import { cn } from "@/libs/utils";
 import { Priority } from "@/components/project/project-type";
@@ -21,7 +21,7 @@ import { IssueStatus } from "@/components/project/project-type";
 
 export function ProjectForm() {
     const {form, setField} = useProjectFormStore()
-    const [users, setUsers] = useState<UserState[]>([])
+    const [users, setUsers] = useState<LoginedUserInfo[]>([])
     const [currentTag, setCurrentTag] = useState('')
   
     const getUsersForAsignee = async () => {

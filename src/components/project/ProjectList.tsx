@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Project, ProjectListRequest } from '@/components/project/project-type'
 import { useRouter } from 'next/navigation'
-import { UserState } from '@/store/useUserStore'
+import { LoginedUserInfo, UserState } from '@/store/useUserStore'
 import { ProjectFilters } from './ProjectFilters'
 import { ProjectGrid } from './ProjectGrid'
 
@@ -30,16 +30,15 @@ const initialRequest: ProjectListRequest = {
 
 export default function ProjectList() {
   const cache = useQueryClient()
-  const userData = cache.getQueryData(['user', 'info']) as { data: UserState['loginedUserInfo'] } | undefined
+  const userData = (cache.getQueryData(['user', 'info']) as {data: LoginedUserInfo} | undefined)?.data
   const [request, setRequest] = useState<ProjectListRequest>(initialRequest)
   const router = useRouter()
 
   useEffect(() => {
-    if (userData?.data) {
-      console.log('🚀 ~ useEffect ~ user:', userData.data);
+    if (userData?.id) {
       setRequest((prev) => ({
         ...prev,
-        assigneeId: [userData.data.id],
+        assigneeId: [userData.id],
       }))
     }
   }, [userData])
@@ -64,7 +63,6 @@ export default function ProjectList() {
         ...prev,
         [key]: newValue
       };
-      console.log('🚀 ~ handleFilterChange ~ newRequest:', newRequest);
       return newRequest;
     });
   }
