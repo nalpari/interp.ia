@@ -52,7 +52,7 @@ export interface ProjectListRequest {
     endDateTo: string | null
 }
 
-export type IssueStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED' | 'ANALYSIS' | 'UNPRODUCIBLE'
+export type IssueStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELED' | 'ANALYSIS' | 'UNPRODUCIBLE'
 export type Priority = 'EMERGENCY' | 'HIGH' | 'MEDIUM' | 'LOW'
 export type IssueType = 'PROJECT' | 'EPIC' | 'STORY' | 'TASK' | 'BUG' | 'SUB_TASK'
 

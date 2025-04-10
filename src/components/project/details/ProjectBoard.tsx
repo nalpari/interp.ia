@@ -12,7 +12,7 @@ const statusColors: Record<IssueStatus, string> = {
   IN_PROGRESS: 'bg-blue-100 dark:bg-blue-900',
   ANALYSIS: 'bg-purple-100 dark:bg-purple-900',
   DONE: 'bg-green-100 dark:bg-green-900',
-  CANCELLED: 'bg-red-100 dark:bg-red-900',
+  CANCELED: 'bg-red-100 dark:bg-red-900',
   UNPRODUCIBLE: 'bg-gray-100 dark:bg-gray-800',
 }
 

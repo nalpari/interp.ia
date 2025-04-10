@@ -152,7 +152,7 @@ export function ProjectForm() {
                   <SelectItem value="TODO">할 일</SelectItem>
                   <SelectItem value="IN_PROGRESS">진행중</SelectItem>
                   <SelectItem value="DONE">완료</SelectItem>
-                  <SelectItem value="CANCELLED">취소됨</SelectItem>
+                  <SelectItem value="CANCELED">취소됨</SelectItem>
                   <SelectItem value="ANALYSIS">분석중</SelectItem>
                   <SelectItem value="UNPRODUCIBLE">재현불가</SelectItem>
                 </SelectContent>
