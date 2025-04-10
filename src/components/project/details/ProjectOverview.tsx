@@ -36,13 +36,13 @@ export default function ProjectOverview({ project, refetch }: ProjectOverviewPro
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 mt-10">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Card className="cursor-pointer hover:bg-gray-50" onClick={getUsersForAsignee}>
             <CardHeader className="text-lg font-bold">Assignee</CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className="space-y-2 mb-4">
                 {project?.assignee?.map((assignee) => (
                   <div key={assignee.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">{assignee.name?.[0]?.toUpperCase()}</div>
@@ -52,6 +52,14 @@ export default function ProjectOverview({ project, refetch }: ProjectOverviewPro
                     </div>
                   </div>
                 ))}
+              </div>
+              <span className="text-lg font-bold mb-2">Creator</span>
+              <div className="flex items-center gap-2 mt-7">
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">{project?.creator?.name?.[0]?.toUpperCase()}</div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{project?.creator?.name}</span>
+                  <span className="text-sm text-gray-500">{project?.creator?.email}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -91,8 +99,8 @@ export default function ProjectOverview({ project, refetch }: ProjectOverviewPro
             </CommandGroup>
           </Command>
           <div className="flex justify-end gap-3 mt-4">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setAssigneeIds(project?.assignee?.map((a) => a.id) || [])
                 setOpen(false)
@@ -172,22 +180,6 @@ export default function ProjectOverview({ project, refetch }: ProjectOverviewPro
               <span className="text-sm text-gray-500 ml-2">{project?.priority}</span>
             </li>
           </ul>
-          <span className="text-lg font-bold mb-2 mt-2">Creator</span>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">{project?.creator?.name?.[0]?.toUpperCase()}</div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">{project?.creator?.name}</span>
-              <span className="text-sm text-gray-500">{project?.creator?.email}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="text-lg font-bold">Sub Issues</CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-2">
-            <span className="text-sm">{project?.subIssue}</span>
-          </div>
         </CardContent>
       </Card>
     </div>

@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <>
       <ReactQueryProviders>
-        <html lang="en" className="h-full bg-gray-100">
+        <html lang="en" className="h-full bg-white">
           <body className={`h-full`}>{children}</body>
         </html>
       </ReactQueryProviders>

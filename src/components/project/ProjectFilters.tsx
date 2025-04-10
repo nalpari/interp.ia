@@ -115,6 +115,7 @@ export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps)
             <SelectValue placeholder="상태" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">전체</SelectItem>
             <SelectItem value="TODO">할 일</SelectItem>
             <SelectItem value="IN_PROGRESS">진행중</SelectItem>
             <SelectItem value="DONE">완료</SelectItem>

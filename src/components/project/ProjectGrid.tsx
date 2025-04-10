@@ -32,7 +32,7 @@ export function ProjectGrid({ projects, onProjectClick, isLoading }: ProjectGrid
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {projects.map((project: Project) => (
         <div key={project.id} onClick={() => onProjectClick(project.id)} className="cursor-pointer">
-          <ExpandingCard title={project.title} description={project.description} image={null} type={project.type} status={project.status} />
+          <ExpandingCard project={project} />
         </div>
       ))}
     </div>

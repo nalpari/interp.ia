@@ -6,9 +6,9 @@ import { Plus } from 'lucide-react'
 
 import { useState } from 'react'
 
-import { createProject } from '@/api/project'
+import { createProject as createProjectApi } from '@/api/project'
 
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ProjectForm } from './ProjectForm'
 import { useProjectFormStore } from '@/store/useProjectFormStore'
 
@@ -17,18 +17,23 @@ export default function CreateButton() {
   const queryClient = useQueryClient()
   const { form, reset } = useProjectFormStore()
 
+  const {
+    mutate: createProjectMutation,
+    isPending,
+  } = useMutation({
+    mutationFn: createProjectApi,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project-list'] })
+      setOpen(false)
+    },
+  })
+
   const handleSubmit = async () => {
     try {
       const projectRequest = {
         ...form,
       }
-
-      console.log('🚀 ~ handleSubmit ~ projectRequest:', projectRequest)
-      await createProject(projectRequest)
-
-      await queryClient.invalidateQueries({ queryKey: ['project-list'] })
-      reset()
-      setOpen(false)
+      await createProjectMutation(projectRequest)
     } catch (error) {
       console.error('Failed to create project:', error)
     }
@@ -42,7 +47,7 @@ export default function CreateButton() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={isPending}>
           <Plus className="mr-2" />
           Create project
         </Button>
