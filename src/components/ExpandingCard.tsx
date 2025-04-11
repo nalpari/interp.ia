@@ -31,7 +31,7 @@ export default function ExpandingCard({ project }: ExpandingCardProps) {
     //     </div>
     //   </div>
     // </div>
-    <Card key={project.id} className='overflow-hidden'>
+    <Card key={project.id} className='overflow-hidden cursor-pointer hover:bg-gray-100'>
       <CardHeader className='pb-3'>
         <CardTitle className='text-2xl font-semibold'>{project.title}</CardTitle>
         <CardDescription className='text-medium text-muted-foreground'>
