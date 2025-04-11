@@ -12,7 +12,7 @@ export const initialData: ProjectRequest = {
     startDate: '',
     endDate: '',
     tag: [],
-    subIssuesId: null
+    subIssuesId: []
 }
 
 interface ProjectFormStore {

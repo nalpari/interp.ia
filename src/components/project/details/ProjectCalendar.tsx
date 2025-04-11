@@ -1,4 +1,4 @@
-import { getIssuesByProjectId } from '@/api/issue'
+import { getIssuesByProjectIssueId } from '@/api/issue'
 import { useQuery } from '@tanstack/react-query'
 import { Project, Issue } from '../project-type'
 import CustomCalendar from './CustomCalendar'
@@ -11,7 +11,7 @@ export default function ProjectCalendar({ project }: { project: Project }) {
 
     const { data: issues } = useQuery({
         queryKey: ['issues', project.id],
-        queryFn: () => getIssuesByProjectId(project.id, null),
+        queryFn: () => getIssuesByProjectIssueId(project.id, null),
     });
 
     const handleDateSelect = (date: string) => {
@@ -30,7 +30,7 @@ export default function ProjectCalendar({ project }: { project: Project }) {
         const isEndDate = project.endDate && new Date(project.endDate).toISOString().split('T')[0] === selectedDate;
 
         const dateIssues = issues?.filter((issue: Issue) => 
-            issue.dueDate?.toISOString().split('T')[0] === selectedDate
+            String(issue.dueDate) === selectedDate
         ) || [];
 
         return (
@@ -64,7 +64,7 @@ export default function ProjectCalendar({ project }: { project: Project }) {
                 </div>
                 {dateIssues.length > 0 && (
                     <div className="mt-4">
-                        <div className="text-sm font-medium mb-2">Issues Due on this Date:</div>
+                        <div className="text-sm font-medium mb-2">Issues :</div>
                         <div className="space-y-2">
                             {dateIssues.map((issue: Issue) => (
                                 <div key={issue.id} className="text-sm p-2 bg-muted rounded">

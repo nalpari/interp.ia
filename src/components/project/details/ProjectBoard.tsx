@@ -24,10 +24,10 @@ export default function ProjectBoard({ project }: ProjectBoardProps) {
           <div key={status} className="flex flex-col">
             <div className={`px-3 py-2 rounded-t-md ${color}`}>
               <h3 className="font-bold text-lg">{status}</h3>
-              <span className='text-muted-foreground'>{project.subIssue?.filter((issue) => issue.status === status).length || 0} issues</span>
+              <span className='text-muted-foreground'>{project.subIssues?.filter((issue) => issue.status === status).length || 0} issues</span>
             </div>
             <div className="bg-muted/50 p-2 rounded-b-md h-[300px] overflow-y-auto">
-              {project.subIssue?.map((issue) => (
+              {project.subIssues?.filter((issue) => issue.status === status).map((issue) => (
                 <SubIssueCard key={issue.id} issue={issue} />
               ))}
               <Button variant="ghost" className="w-full justify-start text-muted-foreground text-sm h-auto py-2">

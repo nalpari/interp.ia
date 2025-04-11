@@ -11,7 +11,7 @@ export interface ProjectRequest {
   endDate: string
   description: string
   tag: string[]
-  subIssuesId: number[] | null
+  subIssuesId: number[]
 }
 
 export interface Project {
@@ -30,7 +30,7 @@ export interface Project {
   endDate: Date
   description: string
   tag: string[]
-  subIssue: Issue[]
+  subIssues: Issue[]
 }
 
 export interface ProjectListRequest {

@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     })
     return NextResponse.json(response.data)
   } catch (error : any) {
-    console.error('Error in getIssuesByProjectId:', error, {
+    console.error('Error in getIssuesByProjectIssueId:', error, {
         message: error.message,
         stack: error.stack,
         status: error.response?.status,

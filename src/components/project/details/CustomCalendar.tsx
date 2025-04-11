@@ -29,14 +29,14 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
         onDateSelect(dateStr);
     }
 
-    const calendarCells = Array.from({ length: startDay + daysInMonth }, (_, index) => {
+    const calendarCells = Array.from({ length: 42 }, (_, index) => {
         if(index < startDay) {
-            return <div key={index} className="h-24"></div>
+            return <div key={index} className="h-32"></div>
         }
         const day = index - startDay + 1;
         const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
         const isSelected = selectedDate === dateStr;
-        const issueCount = issues?.filter(issue => issue.dueDate?.toISOString().split('T')[0] === dateStr).length || 0;
+        const dateIssues = issues?.filter(issue => String(issue.dueDate) === dateStr) || [];
         
         const isStartDate = project.startDate && new Date(project.startDate).toISOString().split('T')[0] === dateStr
         const isCreatedDate = project.createdDate && new Date(project.createdDate).toISOString().split('T')[0] === dateStr
@@ -44,7 +44,7 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
         const isEndDate = project.endDate && new Date(project.endDate).toISOString().split('T')[0] === dateStr
 
         return(
-            <div key={index} className={`border p-2 rounded cursor-pointer ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'} h-24 relative`} onClick={() => handleDateClick(day)}>
+            <div key={index} className={`border p-2 rounded cursor-pointer ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'} h-32 relative`} onClick={() => handleDateClick(day)}>
                 <div className="flex items-start gap-1">
                     <div className="font-bold">{day}</div>
                     <div className="flex flex-wrap gap-0.5">
@@ -70,11 +70,18 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
                         )}
                     </div>
                 </div>
-                {issueCount > 0 && (
-                    <div className="text-xs text-red-500">
-                        {issueCount}
-                    </div>
-                )}
+                <div className="mt-1 space-y-1">
+                    {dateIssues.slice(0, 3).map(issue => (
+                        <div key={issue.id} className="text-xs text-white bg-blue-500 px-1 py-0.5 rounded truncate">
+                            {issue.title}
+                        </div>
+                    ))}
+                    {dateIssues.length > 3 && (
+                        <div className="text-xs text-white bg-blue-500 px-1 py-0.5 rounded truncate">
+                            +{dateIssues.length - 3} more
+                        </div>
+                    )}
+                </div>
             </div>
         )
     })
