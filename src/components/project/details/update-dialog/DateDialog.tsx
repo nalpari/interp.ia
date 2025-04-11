@@ -13,15 +13,14 @@ import { format } from 'date-fns'
 import { updateProject } from '@/api/project'
 import { useState } from 'react'
 
-export default function DateDialog({ project, refetch }: { project: Project, refetch: () => void }) {
+export default function DateDialog({ project, updateProjectMutation }: { project: Project, updateProjectMutation: (request: {id: number, key: string, value: object | string}) => void }) {
   const [isStartDatePopoverOpen, setIsStartDatePopoverOpen] = useState(false)
   const [isDueDatePopoverOpen, setIsDueDatePopoverOpen] = useState(false)
   const [isEndDatePopoverOpen, setIsEndDatePopoverOpen] = useState(false)
 
   const handleUpdateDate = async (date: Date | undefined, key: string, closePopover: () => void) => {
     try {
-      await updateProject(project?.id, key, date ? format(date, 'yyyy-MM-dd') : '')
-      refetch()
+      await updateProjectMutation({id: project?.id, key: key, value: date ? format(date, 'yyyy-MM-dd') : ''})
       closePopover()
     } catch (error) {
       console.error('Error updating date:', error)

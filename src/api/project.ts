@@ -39,10 +39,10 @@ export async function getProject(id: string) {
   }
 }
 
-export async function updateProject(id: number, key: string, value: object | string) {
+export async function updateProject(request: {id: number, key: string, value: object | string}) {
   try {
-    const response = await axios.patch(`/api/project/${id}`, {
-        [key]: value
+    const response = await axios.patch(`/api/project/${request.id}`, {
+        [request.key]: request.value
       });
     return response.data
   } catch (error) {

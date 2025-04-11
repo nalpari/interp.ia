@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { updateProject } from '@/api/project'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-export default function InfoDialog({ project, refetch }: { project: Project; refetch: () => void }) {
+export default function InfoDialog({ project, updateProjectMutation }: { project: Project, updateProjectMutation: (request: {id: number, key: string, value: object | string}) => void }) {
   const [title, setTitle] = useState(project?.title)
   const [subTitle, setSubTitle] = useState(project?.subTitle)
   const [description, setDescription] = useState(project?.description)
@@ -49,8 +49,7 @@ export default function InfoDialog({ project, refetch }: { project: Project; ref
           <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
           <Button
             onClick={() => {
-              updateProject(project?.id, 'title', title)
-              refetch()
+              updateProjectMutation({id: project?.id, key: 'title', value: title} )
             }}
           >
             저장
@@ -61,8 +60,7 @@ export default function InfoDialog({ project, refetch }: { project: Project; ref
           <Input value={subTitle} onChange={(e) => setSubTitle(e.target.value)} />
           <Button
             onClick={() => {
-              updateProject(project?.id, 'subTitle', subTitle)
-              refetch()
+              updateProjectMutation({id: project?.id, key: 'subTitle', value: subTitle})
             }}
           >
             저장
@@ -73,8 +71,7 @@ export default function InfoDialog({ project, refetch }: { project: Project; ref
           <Input value={description} onChange={(e) => setDescription(e.target.value)} />
           <Button
             onClick={() => {
-              updateProject(project?.id, 'description', description)
-              refetch()
+              updateProjectMutation({id: project?.id, key: 'description', value: description})
             }}
           >
             저장
@@ -85,8 +82,7 @@ export default function InfoDialog({ project, refetch }: { project: Project; ref
           <Select
             value={project?.status}
             onValueChange={(value) => {
-              updateProject(project?.id, 'status', value as IssueStatus)
-              refetch()
+              updateProjectMutation({id: project?.id, key: 'status', value: value as IssueStatus})
             }}
           >
             <SelectTrigger>
@@ -106,8 +102,7 @@ export default function InfoDialog({ project, refetch }: { project: Project; ref
           <Select
             value={project?.priority}
             onValueChange={(value) => {
-              updateProject(project?.id, 'priority', value as Priority)
-              refetch()
+              updateProjectMutation({id: project?.id, key: 'priority', value: value as Priority})
             }}
           >
             <SelectTrigger>

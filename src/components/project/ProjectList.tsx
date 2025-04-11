@@ -1,11 +1,11 @@
 'use client'
 
 import { getProjects } from '@/api/project'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useState, useEffect } from 'react'
 import { Project, ProjectListRequest } from '@/components/project/project-type'
 import { useRouter } from 'next/navigation'
-import { LoginedUserInfo, UserState } from '@/store/useUserStore'
+import { useUserStore } from '@/store/useUserStore'
 import { ProjectFilters } from './ProjectFilters'
 import { ProjectGrid } from './ProjectGrid'
 
@@ -29,19 +29,18 @@ const initialRequest: ProjectListRequest = {
 }
 
 export default function ProjectList() {
-  const cache = useQueryClient()
-  const userData = (cache.getQueryData(['user', 'info']) as {data: LoginedUserInfo} | undefined)?.data
+  const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
   const [request, setRequest] = useState<ProjectListRequest>(initialRequest)
   const router = useRouter()
 
   useEffect(() => {
-    if (userData?.id) {
+    if (loginedUserInfo?.id) {
       setRequest((prev) => ({
         ...prev,
-        assigneeId: [userData.id],
+        assigneeId: [loginedUserInfo.id],
       }))
     }
-  }, [userData])
+  }, [loginedUserInfo?.id])
 
   const { data: projects, isLoading } = useQuery<Project[]>({
     queryKey: ['project-list', request],
@@ -49,6 +48,7 @@ export default function ProjectList() {
       const data = await getProjects(request)
       return data
     },
+    staleTime: 0,
   })
 
   const handleProjectClick = (projectId: number) => {

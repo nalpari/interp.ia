@@ -6,9 +6,8 @@ import { Project } from "../../project-type";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { updateProject } from "@/api/project";
 
-export default function TagDialog({ project, refetch }: { project: Project, refetch: () => void }) {
+export default function TagDialog({ project, updateProjectMutation }: { project: Project, updateProjectMutation: (request: {id: number, key: string, value: object | string}) => void }) {
     const [isOpen, setIsOpen] = useState(false);
     const [tags, setTags] = useState<string[]>(project.tag || []);
     const [currentTag, setCurrentTag] = useState('');
@@ -25,8 +24,7 @@ export default function TagDialog({ project, refetch }: { project: Project, refe
 
     const handleSave = async () => {
         try {
-            await updateProject(project.id, 'tag', tags);
-            refetch();
+            await updateProjectMutation({id: project.id, key: 'tag', value: tags});
             setIsOpen(false);
         } catch (error) {
             console.error("Failed to update tags:", error);

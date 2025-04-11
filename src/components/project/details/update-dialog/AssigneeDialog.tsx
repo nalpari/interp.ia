@@ -10,9 +10,10 @@ import { cn } from "@/libs/utils"
 import { Check } from "lucide-react"
 import { useState } from "react"
 import { Project } from "../../project-type"
-import { updateProject } from "@/api/project"
+import { updateProject as updateProjectApi } from "@/api/project"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-export default function AssigneeDialog({ project, refetch }: { project: Project, refetch: () => void }  ) {
+export default function AssigneeDialog({ project, updateProjectMutation }: { project: Project, updateProjectMutation: (request: {id: number, key: string, value: object | string}) => void }  ) {
     const [assigneeIds, setAssigneeIds] = useState<number[]>(project?.assignee?.map((a) => a.id) || [])
     const [users, setUsers] = useState<any[]>([])
     const [open, setOpen] = useState(false)
@@ -24,14 +25,12 @@ export default function AssigneeDialog({ project, refetch }: { project: Project,
   
     const handleUpdateAssignee = async () => {
       try {
-        await updateProject(project.id, 'assigneeId', assigneeIds)
-        refetch()
+        await updateProjectMutation({id: project.id, key: 'assigneeId', value: assigneeIds})
         setOpen(false)
       } catch (error) {
         console.error('Failed to update assignees:', error)
       }
     }
-
 return(
     <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>

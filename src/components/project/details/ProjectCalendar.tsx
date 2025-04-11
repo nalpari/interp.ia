@@ -13,6 +13,7 @@ export default function ProjectCalendar({ project }: { project: Project }) {
     const { data: issues } = useQuery({
         queryKey: ['issues', project.id],
         queryFn: () => getIssuesByProjectIssueId(project.id, null),
+        staleTime: 0,
     });
 
     const handleDateSelect = (date: string) => {

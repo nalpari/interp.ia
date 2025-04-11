@@ -12,13 +12,13 @@ import ProjectOverview from './ProjectOverview'
 import { Badge } from '@/components/ui/badge'
 import { Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { LoginedUserInfo } from '@/store/useUserStore'
+import { useUserStore } from '@/store/useUserStore'
 import ProjectCalendar from './ProjectCalendar'
 
 export default function ProjectHeader() {
   const { id } = useParams()
   const queryClient = useQueryClient()
-  const user = (queryClient.getQueryData(['user', 'info']) as {data: LoginedUserInfo | undefined})?.data
+  const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
   const {
     data: project,
     isLoading,
@@ -26,6 +26,7 @@ export default function ProjectHeader() {
   } = useQuery<Project>({
     queryKey: ['project', id],
     queryFn: () => getProject(id as string),
+    staleTime: 0,
   })
   const [tab, setTab] = useState('overview')
   const router = useRouter()
@@ -51,7 +52,7 @@ export default function ProjectHeader() {
           </Badge>
         </div>
         <div className="flex items-center gap-2">
-          {user?.id === project?.creator.id && (
+          {loginedUserInfo?.id === project?.creator.id && (
             <Button variant="destructive" onClick={handleDeleteProject}>
               <Trash /> Delete
             </Button>

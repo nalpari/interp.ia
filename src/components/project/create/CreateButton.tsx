@@ -23,7 +23,7 @@ export default function CreateButton() {
   } = useMutation({
     mutationFn: createProjectApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['project-list'] })
+      queryClient.invalidateQueries({ queryKey: ['project', 'list'] })
       setOpen(false)
     },
   })
