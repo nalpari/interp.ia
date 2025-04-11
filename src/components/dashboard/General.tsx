@@ -95,8 +95,8 @@ export default function General() {
       <TabsContent value="general" className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>General Information</CardTitle>
-            <CardDescription>Update your photo and personal details here.</CardDescription>
+            <CardTitle>일반 설정</CardTitle>
+            <CardDescription>계정의 기본 정보를 관리합니다.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-4">

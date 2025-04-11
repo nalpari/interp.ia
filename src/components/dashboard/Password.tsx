@@ -12,8 +12,8 @@ export default function Password() {
       <TabsContent value="password" className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>Password</CardTitle>
-            <CardDescription>Change your password here. After saving, you'll be logged out.</CardDescription>
+            <CardTitle>비밀번호 변경</CardTitle>
+            <CardDescription>계정 비밀번호를 변경합니다.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">

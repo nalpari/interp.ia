@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { cn } from '@/libs/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useRouter } from 'next/navigation'
 
 export default function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   const [email, setEmail] = useState('')
@@ -17,7 +17,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
   const router = useRouter()
 
   const { data, error, isPending } = useQuery({
-    queryKey: ['login-user'],
+    queryKey: ['login', 'save-session'],
     queryFn: async () => {
       try {
         const result = await axios.post('http://localhost:8080/login', { email, password })
@@ -27,11 +27,10 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
           refreshToken: result.headers['authorization-refresh'],
           isLoggedIn: true,
         })
-        console.log('🚀 ~ queryFn: ~ response:', response)
         if (response.status === 200) {
-          router.push('/dashboard')
+          router.replace('/dashboard')
         }
-        return result
+        return response
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           setEmail('')
@@ -41,6 +40,7 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
         throw error
       }
     },
+    staleTime: 0,
     enabled: isLogin,
     retry: false,
   })
