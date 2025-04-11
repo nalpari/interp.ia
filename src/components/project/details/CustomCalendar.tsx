@@ -28,7 +28,7 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
     onDateSelect(dateStr)
   }
 
-  const calendarCells = Array.from({ length: 42 }, (_, index) => {
+  const calendarCells = Array.from({ length: daysInMonth + startDay }, (_, index) => {
     if (index < startDay) {
       return <div key={index} className="h-32"></div>
     }
