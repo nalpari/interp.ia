@@ -1,5 +1,4 @@
 import { ProfileFormValues } from '@/components/dashboard/General'
-import { axiosInstance } from '@/libs/axios'
 import axios from 'axios'
 
 export const userApi = {
@@ -9,7 +8,6 @@ export const userApi = {
   },
 
   updateUser: async (data: ProfileFormValues) => {
-    console.log('🚀 ~ updateUser: ~ data:', data)
     const response = await axios.put(`/api/user`, data)
     return response.data
   },

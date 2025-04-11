@@ -1,29 +1,15 @@
 import { NextResponse } from 'next/server'
-
-import { axiosInstance } from '@/libs/axios'
-import { sessionOptions } from '@/libs/session'
-
-import { SessionData } from '@/libs/session'
-import { getIronSession } from 'iron-session'
-import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
+import { axiosInstance } from '@/libs/axios'
 
-const backendURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+const backendURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-  const cookieStore = await cookies()
-  const session = await getIronSession<SessionData>(cookieStore, sessionOptions)
-  const accessToken = session.accessToken
   const id = params.id
 
   try {
     const body = await request.json()
-    const response = await axiosInstance.patch(`${backendURL}/api/projects/${id}`, body, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-      },
-    })
+    const response = await axiosInstance.patch(`${backendURL}/api/projects/${id}`, body)
 
     return NextResponse.json(response.data)
   } catch (error) {
@@ -33,18 +19,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 }
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const cookieStore = await cookies()
-  const session = await getIronSession<SessionData>(cookieStore, sessionOptions)
-  const accessToken = session.accessToken
   const id = params.id
 
   try {
-    const response = await axiosInstance.get(`${backendURL}/api/projects/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-      },
-    })
+    const response = await axiosInstance.get(`${backendURL}/api/projects/${id}`)
     return NextResponse.json(response.data)
   } catch (error) {
     console.error('Error in project API route:', error)

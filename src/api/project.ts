@@ -40,7 +40,6 @@ export async function getProject(id: string) {
 }
 
 export async function updateProject(id: number, key: string, value: object | string) {
-  console.log("key-value:: ",key, value); 
   try {
     const response = await axios.patch(`/api/project/${id}`, {
         [key]: value
