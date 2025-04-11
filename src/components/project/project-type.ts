@@ -57,6 +57,15 @@ export type Priority = 'EMERGENCY' | 'HIGH' | 'MEDIUM' | 'LOW'
 export type IssueType = 'PROJECT' | 'EPIC' | 'STORY' | 'TASK' | 'BUG' | 'SUB_TASK'
 
 
+export const statusColors: Record<IssueStatus, string> = {
+  TODO: 'bg-yellow-100 dark:bg-yellow-900',
+  IN_PROGRESS: 'bg-blue-100 dark:bg-blue-900',
+  ANALYSIS: 'bg-purple-100 dark:bg-purple-900',
+  DONE: 'bg-green-100 dark:bg-green-900',
+  CANCELED: 'bg-red-100 dark:bg-red-900',
+  UNPRODUCIBLE: 'bg-gray-100 dark:bg-gray-800',
+}
+
 
 export interface Issue {
   id: number

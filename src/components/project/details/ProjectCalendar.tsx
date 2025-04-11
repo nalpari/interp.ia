@@ -1,8 +1,9 @@
 import { getIssuesByProjectIssueId } from '@/api/issue'
 import { useQuery } from '@tanstack/react-query'
-import { Project, Issue } from '../project-type'
+import { Project, Issue, statusColors } from '../project-type'
 import CustomCalendar from './CustomCalendar'
 import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 export default function ProjectCalendar({ project }: { project: Project }) {
     const today = new Date();
@@ -67,8 +68,9 @@ export default function ProjectCalendar({ project }: { project: Project }) {
                         <div className="text-sm font-medium mb-2">Issues :</div>
                         <div className="space-y-2">
                             {dateIssues.map((issue: Issue) => (
-                                <div key={issue.id} className="text-sm p-2 bg-muted rounded">
+                                <div key={issue.id} className={"text-sm p-2 rounded bg-muted flex items-center justify-between"}>
                                     {issue.title}
+                                    <Badge variant="outline" className={`ml-2 ${statusColors[issue.status]}`}>{issue.status}</Badge>
                                 </div>
                             ))}
                         </div>
