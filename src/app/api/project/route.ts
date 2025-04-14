@@ -7,8 +7,10 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     // 프로젝트 목록 조회
+    console.log("searchParams: ", searchParams)
+    
     const response = await axiosInstance.get(`${backendURL}/api/projects`, {
-      params: Object.fromEntries(searchParams),
+      params: searchParams
     })
 
     return NextResponse.json(response.data)

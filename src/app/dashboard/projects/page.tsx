@@ -1,5 +1,5 @@
 import CreateButton from '@/components/project/create/CreateButton'
-import ProjectList from '@/components/project/ProjectList'
+import ProjectList from '@/components/project/list/ProjectList'
 
 export default function ProjectsPage() {
 

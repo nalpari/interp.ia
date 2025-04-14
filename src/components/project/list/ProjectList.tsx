@@ -1,13 +1,15 @@
 'use client'
 
 import { getProjects } from '@/api/project'
+import { getUsers } from '@/api/user'
 import { useQuery } from '@tanstack/react-query'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Project, ProjectListRequest } from '@/components/project/project-type'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/useUserStore'
-import { ProjectFilters } from './ProjectFilters'
 import { ProjectGrid } from './ProjectGrid'
+import ProjectFilters from './ProjectFilters'
+import AssigneeSelect from './AssigneeSelect'
 
 const initialRequest: ProjectListRequest = {
   assigneeId: null,
@@ -43,20 +45,31 @@ export default function ProjectList() {
     gcTime: 0,
   })
 
+  const { data: users } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const data = await getUsers(null)
+      return data.data
+    },
+  })
+
   const handleProjectClick = (projectId: number) => {
     router.push(`/projects/${projectId}`)
   }
 
   const handleFilterChange = (key: keyof ProjectListRequest, value: any) => {
-    const newValue = value === 'all' ? null : value
-
-    setRequest((prev) => {
-      const newRequest = {
+    if (key === 'assigneeId') {
+      setRequest(prev => ({
         ...prev,
-        [key]: newValue,
-      }
-      return newRequest
-    })
+        assigneeId: value
+      }))
+    } else {
+      const newValue = value === 'all' ? null : value
+      setRequest(prev => ({
+        ...prev,
+        [key]: newValue
+      }))
+    }
   }
 
   const handleMyAssigneeChange = (value: boolean) => {
@@ -75,8 +88,17 @@ export default function ProjectList() {
 
   return (
     <div className="space-y-6">
-      <ProjectFilters request={request} onFilterChange={handleFilterChange} onMyAssigneeChange={handleMyAssigneeChange} />
-      <ProjectGrid projects={projects || []} onProjectClick={handleProjectClick} isLoading={isLoading} />
+      <ProjectFilters 
+        request={request} 
+        onFilterChange={handleFilterChange} 
+        onMyAssigneeChange={handleMyAssigneeChange}
+        users={users || []}
+      />
+      <ProjectGrid 
+        projects={projects || []} 
+        onProjectClick={handleProjectClick} 
+        isLoading={isLoading} 
+      />
     </div>
   )
 }
