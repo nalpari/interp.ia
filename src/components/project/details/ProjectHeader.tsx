@@ -37,9 +37,11 @@ export default function ProjectHeader() {
   }
 
   const handleDeleteProject = async () => {
-    await deleteProject(Number(id))
-    queryClient.invalidateQueries({ queryKey: ['project', 'list'] })
-    router.push('/dashboard/projects')
+    if(confirm('정말 삭제하시겠습니까?')) {
+      await deleteProject(Number(id))
+      queryClient.invalidateQueries({ queryKey: ['project', 'list'] })
+      router.push('/dashboard/projects')
+    }
   }
 
   return (

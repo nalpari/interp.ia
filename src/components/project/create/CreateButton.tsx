@@ -6,9 +6,9 @@ import { Pencil, Plus } from 'lucide-react'
 
 import { useState } from 'react'
 
-import { createProject as createProjectApi, getProject, updateProject as updateProjectApi } from '@/api/project'
+import { createProject as createProjectApi, updateProject as updateProjectApi } from '@/api/project'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { useProjectFormStore } from '@/store/useProjectFormStore'
 import { Project } from '../project-type'

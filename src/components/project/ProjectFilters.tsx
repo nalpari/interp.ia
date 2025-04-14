@@ -13,6 +13,7 @@ import { CalendarIcon } from 'lucide-react'
 interface ProjectFiltersProps {
   request: ProjectListRequest
   onFilterChange: (key: keyof ProjectListRequest, value: any) => void
+  onMyAssigneeChange: (value: boolean) => void
 }
 
 interface DateFilterProps {
@@ -86,7 +87,7 @@ function DateFilter({ label, fromDate, toDate, onFromChange, onToChange }: DateF
   )
 }
 
-export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps) {
+export function ProjectFilters({ request, onFilterChange, onMyAssigneeChange }: ProjectFiltersProps) {
   const handleReset = () => {
     onFilterChange('status', null)
     onFilterChange('priority', null)
@@ -107,10 +108,7 @@ export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps)
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Select 
-          value={request.status === null ? "" : request.status}
-          onValueChange={(value) => onFilterChange('status', value as IssueStatus)}
-        >
+        <Select value={request.status === null ? '' : request.status} onValueChange={(value) => onFilterChange('status', value as IssueStatus)}>
           <SelectTrigger>
             <SelectValue placeholder="상태" />
           </SelectTrigger>
@@ -125,10 +123,7 @@ export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps)
           </SelectContent>
         </Select>
 
-        <Select 
-          value={request.priority === null ? "" : request.priority}
-          onValueChange={(value) => onFilterChange('priority', value as Priority)}
-        >
+        <Select value={request.priority === null ? '' : request.priority} onValueChange={(value) => onFilterChange('priority', value as Priority)}>
           <SelectTrigger>
             <SelectValue placeholder="중요도" />
           </SelectTrigger>
@@ -141,17 +136,9 @@ export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps)
           </SelectContent>
         </Select>
 
-        <Input 
-          value={request.title || ''}
-          placeholder="제목" 
-          onChange={(e) => onFilterChange('title', e.target.value)} 
-        />
+        <Input value={request.title || ''} placeholder="제목" onChange={(e) => onFilterChange('title', e.target.value)} />
 
-        <Input 
-          value={request.subTitle || ''}
-          placeholder="부제목" 
-          onChange={(e) => onFilterChange('subTitle', e.target.value)} 
-        />
+        <Input value={request.subTitle || ''} placeholder="부제목" onChange={(e) => onFilterChange('subTitle', e.target.value)} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -194,9 +181,17 @@ export function ProjectFilters({ request, onFilterChange }: ProjectFiltersProps)
           onToChange={(date) => onFilterChange('endDateTo', date)}
         />
         <div className="flex justify-end">
-          <Button variant="default" onClick={handleReset}>
-            검색조건 초기화
-          </Button>
+          <>
+            <div className="flex items-center gap-2 mr-4">
+              <label className="text-sm font-medium">
+                <input type="checkbox" className='mr-2 items-center' onChange={(e) => onMyAssigneeChange(e.target.checked)}/>
+                할당된 프로젝트만 조회
+              </label>
+            </div>
+            <Button variant="default" onClick={handleReset}>
+              검색조건 초기화
+            </Button>
+          </>
         </div>
       </div>
     </div>

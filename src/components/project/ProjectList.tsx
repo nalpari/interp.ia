@@ -33,22 +33,14 @@ export default function ProjectList() {
   const [request, setRequest] = useState<ProjectListRequest>(initialRequest)
   const router = useRouter()
 
-  useEffect(() => {
-    if (loginedUserInfo?.id) {
-      setRequest((prev) => ({
-        ...prev,
-        assigneeId: [loginedUserInfo.id],
-      }))
-    }
-  }, [loginedUserInfo?.id])
-
   const { data: projects, isLoading } = useQuery<Project[]>({
-    queryKey: ['project', 'list'],
+    queryKey: ['project', 'list', request],
     queryFn: async () => {
       const data = await getProjects(request)
       return data
     },
     staleTime: 0,
+    gcTime: 0,
   })
 
   const handleProjectClick = (projectId: number) => {
@@ -56,28 +48,35 @@ export default function ProjectList() {
   }
 
   const handleFilterChange = (key: keyof ProjectListRequest, value: any) => {
-    const newValue = value === "all" ? null : value;
-    
-    setRequest(prev => {
+    const newValue = value === 'all' ? null : value
+
+    setRequest((prev) => {
       const newRequest = {
         ...prev,
-        [key]: newValue
-      };
-      return newRequest;
-    });
+        [key]: newValue,
+      }
+      return newRequest
+    })
+  }
+
+  const handleMyAssigneeChange = (value: boolean) => {
+    if (value) {
+      setRequest((prev) => ({
+        ...prev,
+        assigneeId: [loginedUserInfo?.id],
+      }))
+    } else {
+      setRequest((prev) => ({
+        ...prev,
+        assigneeId: null,
+      }))
+    }
   }
 
   return (
     <div className="space-y-6">
-      <ProjectFilters 
-        request={request}
-        onFilterChange={handleFilterChange}
-      />
-      <ProjectGrid 
-        projects={projects || []}
-        onProjectClick={handleProjectClick}
-        isLoading={isLoading}
-      />
+      <ProjectFilters request={request} onFilterChange={handleFilterChange} onMyAssigneeChange={handleMyAssigneeChange} />
+      <ProjectGrid projects={projects || []} onProjectClick={handleProjectClick} isLoading={isLoading} />
     </div>
   )
 }
