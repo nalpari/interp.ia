@@ -56,7 +56,6 @@ export type IssueStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELED' | 'ANALYS
 export type Priority = 'EMERGENCY' | 'HIGH' | 'MEDIUM' | 'LOW'
 export type IssueType = 'PROJECT' | 'EPIC' | 'STORY' | 'TASK' | 'BUG' | 'SUB_TASK'
 
-
 export const statusColors: Record<IssueStatus, string> = {
   TODO: 'bg-yellow-100 dark:bg-yellow-900',
   IN_PROGRESS: 'bg-blue-100 dark:bg-blue-900',
@@ -66,6 +65,29 @@ export const statusColors: Record<IssueStatus, string> = {
   UNPRODUCIBLE: 'bg-gray-100 dark:bg-gray-800',
 }
 
+export const typeIcons: Record<IssueType, string> = {
+  PROJECT: '🚀',
+  EPIC: '💡',
+  STORY: '📝',
+  TASK: '🔍',
+  BUG: '🐛',
+  SUB_TASK: '🔍'
+}
+export const statusLabels: Record<IssueStatus, string> = {
+  TODO: '할 일',
+  IN_PROGRESS: '진행중',
+  DONE: '완료',
+  CANCELED: '취소됨',
+  ANALYSIS: '분석중',
+  UNPRODUCIBLE: '재현불가'
+}
+
+export const priorityLabels: Record<Priority, string> = {
+  EMERGENCY: '긴급',
+  HIGH: '높음',
+  MEDIUM: '중간',
+  LOW: '낮음'
+}
 
 export interface Issue {
   id: number
