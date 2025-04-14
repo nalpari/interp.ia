@@ -14,6 +14,7 @@ import { Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useUserStore } from '@/store/useUserStore'
 import ProjectCalendar from './ProjectCalendar'
+import CreateButton from '../create/CreateButton'
 
 export default function ProjectHeader() {
   const { id } = useParams()
@@ -31,14 +32,13 @@ export default function ProjectHeader() {
   const [tab, setTab] = useState('overview')
   const router = useRouter()
 
-
   if (isLoading) {
     return <div>Loading...</div>
   }
 
   const handleDeleteProject = async () => {
     await deleteProject(Number(id))
-    queryClient.invalidateQueries({ queryKey: ['project-list'] })
+    queryClient.invalidateQueries({ queryKey: ['project', 'list'] })
     router.push('/dashboard/projects')
   }
 
@@ -51,11 +51,14 @@ export default function ProjectHeader() {
             {project?.type}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2"> 
           {loginedUserInfo?.id === project?.creator.id && (
+            <>
             <Button variant="destructive" onClick={handleDeleteProject}>
               <Trash /> Delete
             </Button>
+            <CreateButton project={project} refetch={refetch} />
+            </>
           )}
         </div>
       </div>
@@ -78,7 +81,7 @@ export default function ProjectHeader() {
           {project && (
             <>
               <TabsContent value="overview">
-                <ProjectOverview project={project} refetch={refetch} />
+                <ProjectOverview project={project} />
               </TabsContent>
               <TabsContent value="list">
                 <ProjectIssuesList project={project} />

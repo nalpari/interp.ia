@@ -43,7 +43,7 @@ export default function ProjectList() {
   }, [loginedUserInfo?.id])
 
   const { data: projects, isLoading } = useQuery<Project[]>({
-    queryKey: ['project-list', request],
+    queryKey: ['project', 'list'],
     queryFn: async () => {
       const data = await getProjects(request)
       return data
