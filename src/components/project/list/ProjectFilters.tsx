@@ -1,6 +1,6 @@
 'use client'
 
-import { ProjectListRequest, IssueStatus, Priority } from '@/components/project/project-type'
+import { ProjectListRequest, IssueStatus, Priority, statusLabels, priorityLabels } from '@/components/project/project-type'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -43,12 +43,11 @@ export default function ProjectFilters({ request, onFilterChange, onMyAssigneeCh
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">전체</SelectItem>
-            <SelectItem value="TODO">할 일</SelectItem>
-            <SelectItem value="IN_PROGRESS">진행중</SelectItem>
-            <SelectItem value="DONE">완료</SelectItem>
-            <SelectItem value="CANCELLED">취소됨</SelectItem>
-            <SelectItem value="ANALYSIS">분석중</SelectItem>
-            <SelectItem value="UNPRODUCIBLE">재현불가</SelectItem>
+            {Object.entries(statusLabels).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
@@ -58,10 +57,11 @@ export default function ProjectFilters({ request, onFilterChange, onMyAssigneeCh
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">전체</SelectItem>
-            <SelectItem value="EMERGENCY">긴급</SelectItem>
-            <SelectItem value="HIGH">높음</SelectItem>
-            <SelectItem value="MEDIUM">중간</SelectItem>
-            <SelectItem value="LOW">낮음</SelectItem>
+            {Object.entries(priorityLabels).map(([value, label]) => (
+              <SelectItem key={value} value={value}>
+                {label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 

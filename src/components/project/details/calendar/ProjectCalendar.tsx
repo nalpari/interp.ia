@@ -1,9 +1,9 @@
 import { getIssuesByProjectIssueId } from '@/api/issue'
 import { useQuery } from '@tanstack/react-query'
-import { Project, Issue, statusColors } from '../project-type'
-import CustomCalendar from './CustomCalendar'
+import { Project, Issue, statusColors } from '../../project-type'
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import CustomCalendar from './CustomCalendar'
 
 export default function ProjectCalendar({ project }: { project: Project }) {
     const today = new Date();

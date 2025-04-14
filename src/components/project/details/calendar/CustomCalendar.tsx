@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Issue, Project, statusColors } from '../project-type'
+import { Issue, Project, statusColors } from '../../project-type'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -30,7 +30,7 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
 
   const calendarCells = Array.from({ length: daysInMonth + startDay }, (_, index) => {
     if (index < startDay) {
-      return <div key={index} className="h-32"></div>
+      return <div key={index} className="h-[140px]"></div>
     }
     const day = index - startDay + 1
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
@@ -45,7 +45,7 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
     return (
       <div
         key={index}
-        className={`border p-2 rounded cursor-pointer ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'} h-32 relative`}
+        className={`border p-2 rounded cursor-pointer ${isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'} h-[140px] relative`}
         onClick={() => handleDateClick(day)}
       >
         <div className="flex items-start gap-1">
@@ -63,7 +63,7 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
               {issue.title}
             </div>
           ))}
-          {dateIssues.length > 3 && <div className="text-xs bg-blue-500 px-1 py-0.5 rounded truncate">+{dateIssues.length - 3} more</div>}
+          {dateIssues.length > 3 && <div className="text-xs text-white bg-black px-1 py-0.5 rounded truncate">+{dateIssues.length - 3} more</div>}
         </div>
       </div>
     )
