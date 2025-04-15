@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { AssigneeSelect } from './AssigneeSelect'
 import DateFilter from './DateFilter'
+import { useProjectListStore } from '@/store/useProjectListStore'
 
 interface ProjectFiltersProps {
   request: ProjectListRequest
@@ -14,23 +15,9 @@ interface ProjectFiltersProps {
 }
 
 export default function ProjectFilters({ request, onFilterChange, onMyAssigneeChange }: ProjectFiltersProps) {
+  const { reset } = useProjectListStore()
   const handleReset = () => {
-    onFilterChange('status', null)
-    onFilterChange('priority', null)
-    onFilterChange('title', null)
-    onFilterChange('subTitle', null)
-    onFilterChange('createdDateFrom', null)
-    onFilterChange('createdDateTo', null)
-    onFilterChange('updatedDateFrom', null)
-    onFilterChange('updatedDateTo', null)
-    onFilterChange('dueDateFrom', null)
-    onFilterChange('dueDateTo', null)
-    onFilterChange('startDateFrom', null)
-    onFilterChange('startDateTo', null)
-    onFilterChange('endDateFrom', null)
-    onFilterChange('endDateTo', null)
-    onFilterChange('assigneeId', null)
-    onFilterChange('creatorId', null)
+    reset()
   }
 
   return (

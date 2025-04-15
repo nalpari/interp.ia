@@ -8,29 +8,11 @@ import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/useUserStore'
 import { ProjectGrid } from './ProjectGrid'
 import ProjectFilters from './ProjectFilters'
-
-const initialRequest: ProjectListRequest = {
-  assigneeId: null,
-  status: null,
-  priority: null,
-  title: null,
-  subTitle: null,
-  creatorId: null,
-  createdDateFrom: null,
-  createdDateTo: null,
-  updatedDateFrom: null,
-  updatedDateTo: null,
-  dueDateFrom: null,
-  dueDateTo: null,
-  startDateFrom: null,
-  startDateTo: null,
-  endDateFrom: null,
-  endDateTo: null,
-}
+import { useProjectListStore } from '@/store/useProjectListStore'
 
 export default function ProjectList() {
   const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
-  const [request, setRequest] = useState<ProjectListRequest>(initialRequest)
+  const { request, setFilter, reset } = useProjectListStore()
   const router = useRouter()
 
   const { data: projects, isLoading } = useQuery<Project[]>({
@@ -49,30 +31,18 @@ export default function ProjectList() {
 
   const handleFilterChange = (key: keyof ProjectListRequest, value: any) => {
     if (key === 'assigneeId') {
-      setRequest(prev => ({
-        ...prev,
-        assigneeId: value
-      }))
+      setFilter(key, value)
     } else {
       const newValue = value === 'all' ? null : value
-      setRequest(prev => ({
-        ...prev,
-        [key]: newValue
-      }))
+      setFilter(key, newValue)
     }
   }
 
   const handleMyAssigneeChange = (value: boolean) => {
     if (value) {
-      setRequest((prev) => ({
-        ...prev,
-        assigneeId: [loginedUserInfo?.id],
-      }))
+      setFilter('assigneeId', [loginedUserInfo?.id])
     } else {
-      setRequest((prev) => ({
-        ...prev,
-        assigneeId: null,
-      }))
+      setFilter('assigneeId', null)
     }
   }
 
