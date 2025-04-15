@@ -6,40 +6,106 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useProjectFormStore } from '@/store/useProjectFormStore'
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/libs/utils'
-import { Priority, IssueStatus, Project } from '@/components/project/project-type'
+import { Priority, IssueStatus, Project, ProjectRequest } from '@/components/project/project-type'
 import { DateFields } from './DateFields'
 import { AssigneeSelect } from '../list/AssigneeSelect'
+import { useDebounce } from '@/hooks/useDebounce'
+import { DialogFooter } from '@/components/ui/dialog'
+
+const initialFormData: ProjectRequest = {
+  title: '',
+  subTitle: '',
+  description: '',
+  status: 'TODO',
+  priority: 'MEDIUM',
+  assigneeId: [],
+  dueDate: '',
+  startDate: '',
+  endDate: '',
+  tag: [],
+  subIssuesId: [],
+}
 
 export function ProjectForm({
   project,
   updateProjectMutation,
+  onSubmit,
 }: {
   project?: Project | null
-  updateProjectMutation: (request: { id: number; key: string; value: object | string }) => void
+  updateProjectMutation?: (request: { id: number; key: string; value: object | string }) => void
+  onSubmit?: (formData: ProjectRequest) => void
 }) {
-  const { form, setField } = useProjectFormStore()
+  const [form, setForm] = useState<ProjectRequest>(project ? {
+    title: project.title,
+    subTitle: project.subTitle,
+    description: project.description,
+    status: project.status,
+    priority: project.priority,
+    assigneeId: project.assignee.map((user) => user.id),
+    dueDate: project.dueDate ? (typeof project.dueDate === 'string' ? project.dueDate : project.dueDate.toISOString()) : '',
+    startDate: project.startDate ? (typeof project.startDate === 'string' ? project.startDate : project.startDate.toISOString()) : '',
+    endDate: project.endDate ? (typeof project.endDate === 'string' ? project.endDate : project.endDate.toISOString()) : '',
+    tag: project.tag,
+    subIssuesId: project.subIssues.map((issue) => issue.id)
+  } : initialFormData)
   const [currentTag, setCurrentTag] = useState('')
 
-  const handleUpdate = async (key: string, value: any) => {
+  const debouncedUpdate = useDebounce((key: string, value: any) => {
     if (project?.id) {
+      handleUpdate(key, value)
+    }
+  }, 500)
+
+  const handleUpdate = async (key: string, value: any) => {
+    if (project?.id && updateProjectMutation) {
       try {
         await updateProjectMutation({ id: project.id, key, value })
       } catch (error) {
-        console.error(error)
+        console.error('Failed to update project:', error)
+        alert('프로젝트 업데이트에 실패했습니다. 다시 시도해주세요.')
+        setForm(prev => ({
+          ...prev,
+          [key]: project[key as keyof Project]
+        }))
       }
-      alert('저장되었습니다.')
     }
   }
 
   const removeTag = (tagToRemove: string) => {
-    setField(
-      'tag',
-      form.tag.filter((tag) => tag !== tagToRemove),
-    )
+    setForm((prev) => {
+      const newForm = {
+        ...prev,
+        tag: prev.tag.filter((tag) => tag !== tagToRemove),
+      }
+      if (project?.id) {
+        handleUpdate('tag', newForm.tag)
+      }
+      return newForm
+    })
+  }
+
+  const setField = <K extends keyof ProjectRequest>(field: K, value: ProjectRequest[K]) => {
+    setForm(prev => {
+      const newForm = {
+        ...prev,
+        [field]: value
+      }
+      if (project?.id) {
+        if (field === 'title' && (!value || (typeof value === 'string' && value.trim() === ''))) {
+          alert('제목을 입력해주세요.')
+          return prev
+        }
+        if (['title', 'subTitle', 'description'].includes(field)) {
+          debouncedUpdate(field, value)
+        } else {
+          handleUpdate(field, value)
+        }
+      }
+      return newForm
+    })
   }
 
   return (
@@ -48,7 +114,7 @@ export function ProjectForm({
         <Label htmlFor="title" className="text-right">
           Title<span className="text-red-500">*</span>
         </Label>
-        <div className="col-span-3 flex gap-2">
+        <div className="col-span-3">
           <Input
             id="title"
             value={form.title}
@@ -58,55 +124,30 @@ export function ProjectForm({
             aria-required="true"
             className={cn('w-full', !form.title && 'border-red-500 focus-visible:ring-red-500')}
           />
-          {project && (
-            <Button size="sm" onClick={() => handleUpdate('title', form.title)} disabled={!form.title}>
-              Save
-            </Button>
-          )}
         </div>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="subTitle" className="text-right">
           SubTitle
         </Label>
-        <div className="col-span-3 flex gap-2">
+        <div className="col-span-3">
           <Input id="subTitle" value={form.subTitle} onChange={(e) => setField('subTitle', e.target.value)} placeholder="SubTitle" />
-          {project && (
-            <Button size="sm" onClick={() => handleUpdate('subTitle', form.subTitle)}>
-              Save
-            </Button>
-          )}
         </div>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="description" className="text-right">
           Description
         </Label>
-        <div className="col-span-3 flex gap-2">
+        <div className="col-span-3">
           <Textarea id="description" value={form.description} onChange={(e) => setField('description', e.target.value)} placeholder="Description" />
-          {project && (
-            <Button size="sm" onClick={() => handleUpdate('description', form.description)}>
-              Save
-            </Button>
-          )}
         </div>
       </div>
       <div className="grid grid-cols-4 items-center gap-4">
         <Label htmlFor="assignee" className="text-right font-medium">
-          담당자 <span className="text-red-500">*</span>
+          담당자
         </Label>
-        <div className="col-span-3 flex gap-2">
-          <AssigneeSelect
-            selectedIds={form.assigneeId}
-            onSelect={(ids) => (project ? handleUpdate('assigneeId', ids) : setField('assigneeId', ids))}
-            required
-            className="flex-1"
-          />
-          {project && (
-            <Button size="sm" onClick={() => handleUpdate('assigneeId', form.assigneeId)}>
-              Save
-            </Button>
-          )}
+        <div className="col-span-3">
+          <AssigneeSelect selectedIds={form.assigneeId} onSelect={(ids) => setField('assigneeId', ids)} className="flex-1" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -188,13 +229,18 @@ export function ProjectForm({
               }
             }}
           />
-          {project && (
-            <Button size="sm" onClick={() => handleUpdate('tag', form.tag)} className="ml-2">
-              Save
-            </Button>
-          )}
         </div>
       </div>
+      {!project && (
+        <DialogFooter>
+          <Button 
+            onClick={() => onSubmit?.(form)}
+            disabled={!form.title.trim()}
+          >
+            Create
+          </Button>
+        </DialogFooter>
+      )}
     </div>
   )
 }

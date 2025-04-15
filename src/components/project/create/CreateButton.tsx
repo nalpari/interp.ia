@@ -3,26 +3,34 @@
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Pencil, Plus } from 'lucide-react'
-
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import { createProject as createProjectApi, updateProject as updateProjectApi } from '@/api/project'
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-
-import { useProjectFormStore } from '@/store/useProjectFormStore'
-import { Project } from '../project-type'
+import { Project, ProjectRequest } from '../project-type'
 import { ProjectForm } from './ProjectForm'
+
+const initialFormData: ProjectRequest = {
+  title: '',
+  subTitle: '',
+  description: '',
+  status: 'TODO',
+  priority: 'MEDIUM',
+  assigneeId: [],
+  dueDate: '',
+  startDate: '',
+  endDate: '',
+  tag: [],
+  subIssuesId: []
+}
 
 interface CreateButtonProps {
   project?: Project | null
-  refetch?: () => Promise<any>
+  updateProjectMutation?: (request: { id: number; key: string; value: object | string }) => void
 }
 
-export default function CreateButton({ project, refetch }: CreateButtonProps) {
+export default function CreateButton({ project, updateProjectMutation }: CreateButtonProps) {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
-  const { form, reset } = useProjectFormStore()
 
   const {
     mutate: createProjectMutation,
@@ -31,45 +39,24 @@ export default function CreateButton({ project, refetch }: CreateButtonProps) {
     mutationFn: createProjectApi,
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['project', 'list'] })
-      // refetch vs invalidateQ
-      // refetch < windowOnfocus
       setOpen(false)
     }
   })
 
-  // windowOnFocus - 리렌더링 
-  const {
-    mutate: updateProjectMutation,
-  } = useMutation({
-    mutationFn: updateProjectApi,
-    onSuccess: async () => {
-      if (refetch) {
-        await refetch()
-      } else {
-        queryClient.invalidateQueries({ queryKey: ['project', project?.id] })
-      }
-    }
-  })
+  const handleOpenChange = (value: boolean) => {
+    setOpen(value)
+  }
 
-  const handleSubmit = async () => {
-    if(form.title.trim() === '' || form.assigneeId.length === 0) {
-      alert
+  const handleSubmit = async (formData: ProjectRequest) => {
+    if (formData.title.trim() === '') {
+      alert('제목을 입력해주세요.')
       return
     }
     try {
-      const projectRequest = {
-        ...form,
-      }
-      await createProjectMutation(projectRequest)
+      await createProjectMutation(formData)
     } catch (error) {
       console.error('Failed to create project:', error)
     }
-  }
-
-  const handleOpenChange = (value: boolean) => {
-    setOpen(value)
-    if (!value) reset()
-    else if (project) reset(project)
   }
 
   return (
@@ -93,14 +80,11 @@ export default function CreateButton({ project, refetch }: CreateButtonProps) {
         <DialogHeader>
           <DialogTitle>{project ? 'Edit' : 'Create New'} project</DialogTitle>
         </DialogHeader>
-        <ProjectForm project={project} updateProjectMutation={updateProjectMutation} />
-        {!project && (
-          <DialogFooter>
-            <Button onClick={handleSubmit}
-            disabled={form.title.trim() === '' || form.assigneeId.length === 0}
-            >Create</Button>
-          </DialogFooter>
-        )}
+        <ProjectForm 
+          project={project} 
+          updateProjectMutation={updateProjectMutation}
+          onSubmit={handleSubmit}
+        />
       </DialogContent>
     </Dialog>
   )
