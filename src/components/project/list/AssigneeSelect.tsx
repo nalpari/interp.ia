@@ -1,63 +1,101 @@
 'use client'
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { cn } from "@/libs/utils";
-import { Check, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Check, X } from "lucide-react";
+import { cn } from "@/libs/utils";
 import { useState, useEffect } from "react";
+import { getUsers } from "@/api/user";
 
-interface AssigneeSelectProps {
-    users: { id: number; name: string }[]
-    selectedIds: number[] | null
-    onSelect: (ids: number[] | null) => void
-    type: 'assignee' | 'creator'
+interface User {
+    id: number;
+    name: string;
 }
 
-export default function AssigneeSelect({ users, selectedIds, onSelect, type }: AssigneeSelectProps) {
-    const [selected, setSelected] = useState<number[]>(selectedIds || [])
+interface AssigneeSelectProps {
+    selectedIds: number[];
+    onSelect: (ids: number[]) => void;
+    type?: 'single' | 'multiple';
+    required?: boolean;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    users?: User[];
+    className?: string;
+}
+
+export function AssigneeSelect({
+    selectedIds,
+    onSelect,
+    type = 'multiple',
+    required = false,
+    placeholder = '담당자 선택',
+    searchPlaceholder = '담당자 검색...',
+    users: initialUsers,
+    className
+}: AssigneeSelectProps) {
+    const [users, setUsers] = useState<User[]>(initialUsers || []);
+    const [selected, setSelected] = useState<number[]>(selectedIds);
 
     useEffect(() => {
-        setSelected(selectedIds || [])
-    }, [selectedIds])
+        setSelected(selectedIds);
+    }, [selectedIds]);
+
+    useEffect(() => {
+        if (!initialUsers) {
+            loadUsers();
+        }
+    }, [initialUsers]);
+
+    const loadUsers = async () => {
+        try {
+            const response = await getUsers(null);
+            setUsers(response.data);
+        } catch (error) {
+            console.error('Failed to load users:', error);
+        }
+    };
 
     const handleSelect = (userId: number) => {
-        if (type === 'creator') {
-            setSelected([userId])
-            onSelect([userId])
+        let newSelected: number[];
+        
+        if (type === 'single') {
+            newSelected = [userId];
         } else {
-            const isSelected = selected.includes(userId)
-            let newSelected: number[]
-            
-            if (isSelected) {
-                newSelected = selected.filter(id => id !== userId)
-            } else {
-                newSelected = [...selected, userId]
-            }
-            
-            setSelected(newSelected)
-            onSelect(newSelected.length > 0 ? newSelected : null)
+            const isSelected = selected.includes(userId);
+            newSelected = isSelected
+                ? selected.filter(id => id !== userId)
+                : [...selected, userId];
         }
-    }
+        
+        setSelected(newSelected);
+        onSelect(newSelected);
+    };
 
-    const removeUser = (userId: number) => {
-        if (type === 'creator') {
-            setSelected([])
-            onSelect(null)
-        } else {
-            const newSelected = selected.filter(id => id !== userId)
-            setSelected(newSelected)
-            onSelect(newSelected.length > 0 ? newSelected : null)
-        }
-    }
+    const handleRemove = (userId: number, e?: React.MouseEvent) => {
+        e?.stopPropagation();
+        e?.preventDefault();
+        
+        const newSelected = type === 'single'
+            ? []
+            : selected.filter(id => id !== userId);
+            
+        setSelected(newSelected);
+        onSelect(newSelected);
+    };
 
     return (
         <Popover>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className="w-full justify-start text-left font-normal"
+                    className={cn(
+                        "w-full justify-start text-left font-normal",
+                        required && selected.length === 0 && "border-red-500 focus-visible:ring-red-500",
+                        className
+                    )}
+                    onClick={() => !initialUsers && loadUsers()}
                 >
                     {selected.length > 0 ? (
                         <div className="flex gap-1 flex-wrap">
@@ -70,17 +108,14 @@ export default function AssigneeSelect({ users, selectedIds, onSelect, type }: A
                                         className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
-                                                removeUser(userId)
+                                                handleRemove(userId);
                                             }
                                         }}
                                         onMouseDown={(e) => {
-                                            e.preventDefault()
-                                            e.stopPropagation()
+                                            e.preventDefault();
+                                            e.stopPropagation();
                                         }}
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            removeUser(userId)
-                                        }}
+                                        onClick={(e) => handleRemove(userId, e)}
                                     >
                                         <X className="h-3 w-3" />
                                     </div>
@@ -88,13 +123,15 @@ export default function AssigneeSelect({ users, selectedIds, onSelect, type }: A
                             ))}
                         </div>
                     ) : (
-                        type === 'assignee' ? '담당자 선택' : '생성자 선택'
+                        <span className="text-muted-foreground">
+                            {placeholder}{required && ' (필수)'}
+                        </span>
                     )}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0" align="start">
                 <Command>
-                    <CommandInput placeholder={`${type === 'assignee' ? '담당자' : '생성자'} 검색...`} />
+                    <CommandInput placeholder={searchPlaceholder} />
                     <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
                     <CommandGroup>
                         {users.map((user) => (
@@ -119,5 +156,5 @@ export default function AssigneeSelect({ users, selectedIds, onSelect, type }: A
                 </Command>
             </PopoverContent>
         </Popover>
-    )
+    );
 }

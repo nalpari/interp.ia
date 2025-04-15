@@ -6,9 +6,9 @@ export interface ProjectRequest {
   status: IssueStatus
   priority: Priority
   assigneeId: number[]
-  dueDate: string
-  startDate: string
-  endDate: string
+  dueDate: string | null
+  startDate: string | null
+  endDate: string | null
   description: string
   tag: string[]
   subIssuesId: number[]

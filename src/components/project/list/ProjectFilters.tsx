@@ -4,17 +4,16 @@ import { ProjectListRequest, IssueStatus, Priority, statusLabels, priorityLabels
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import AssigneeSelect from './AssigneeSelect'
+import { AssigneeSelect } from './AssigneeSelect'
 import DateFilter from './DateFilter'
 
 interface ProjectFiltersProps {
   request: ProjectListRequest
   onFilterChange: (key: keyof ProjectListRequest, value: any) => void
   onMyAssigneeChange: (value: boolean) => void
-  users: { id: number; name: string }[]
 }
 
-export default function ProjectFilters({ request, onFilterChange, onMyAssigneeChange, users }: ProjectFiltersProps) {
+export default function ProjectFilters({ request, onFilterChange, onMyAssigneeChange }: ProjectFiltersProps) {
   const handleReset = () => {
     onFilterChange('status', null)
     onFilterChange('priority', null)
@@ -110,23 +109,19 @@ export default function ProjectFilters({ request, onFilterChange, onMyAssigneeCh
           onToChange={(date) => onFilterChange('endDateTo', date)}
         />
         <div className="flex gap-2">
-          <AssigneeSelect 
-            users={users} 
-            selectedIds={request.assigneeId || []}
-            onSelect={(ids) => onFilterChange('assigneeId', ids || [])}
-            type="assignee"
-          />
-          <AssigneeSelect 
-            users={users} 
+          <AssigneeSelect selectedIds={request.assigneeId || []} onSelect={(ids) => onFilterChange('assigneeId', ids || [])} type="multiple" />
+          <AssigneeSelect
             selectedIds={request.creatorId ? [request.creatorId] : []}
             onSelect={(ids) => onFilterChange('creatorId', ids?.[0] || null)}
-            type="creator"
+            type="single"
+            placeholder="생성자 선택"
+            searchPlaceholder="생성자 검색..."
           />
         </div>
       </div>
       <div className="flex justify-end items-center gap-2">
         <label className="text-sm font-medium">
-          <input type="checkbox" className='mr-2 items-center' onChange={(e) => onMyAssigneeChange(e.target.checked)}/>
+          <input type="checkbox" className="mr-2 items-center" onChange={(e) => onMyAssigneeChange(e.target.checked)} />
           할당된 프로젝트만 조회
         </label>
         <Button variant="default" onClick={handleReset}>

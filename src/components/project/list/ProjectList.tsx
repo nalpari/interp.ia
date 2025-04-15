@@ -1,7 +1,6 @@
 'use client'
 
 import { getProjects } from '@/api/project'
-import { getUsers } from '@/api/user'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Project, ProjectListRequest } from '@/components/project/project-type'
@@ -9,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/useUserStore'
 import { ProjectGrid } from './ProjectGrid'
 import ProjectFilters from './ProjectFilters'
-import AssigneeSelect from './AssigneeSelect'
 
 const initialRequest: ProjectListRequest = {
   assigneeId: null,
@@ -43,14 +41,6 @@ export default function ProjectList() {
     },
     staleTime: 0,
     gcTime: 0,
-  })
-
-  const { data: users } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => {
-      const data = await getUsers(null)
-      return data.data
-    },
   })
 
   const handleProjectClick = (projectId: number) => {
@@ -92,7 +82,6 @@ export default function ProjectList() {
         request={request} 
         onFilterChange={handleFilterChange} 
         onMyAssigneeChange={handleMyAssigneeChange}
-        users={users || []}
       />
       <ProjectGrid 
         projects={projects || []} 

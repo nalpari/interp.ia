@@ -49,6 +49,10 @@ export default function CreateButton({ project, refetch }: CreateButtonProps) {
   })
 
   const handleSubmit = async () => {
+    if(form.title.trim() === '' || form.assigneeId.length === 0) {
+      alert
+      return
+    }
     try {
       const projectRequest = {
         ...form,
@@ -89,7 +93,9 @@ export default function CreateButton({ project, refetch }: CreateButtonProps) {
         <ProjectForm project={project} updateProjectMutation={updateProjectMutation} />
         {!project && (
           <DialogFooter>
-            <Button onClick={handleSubmit}>Create</Button>
+            <Button onClick={handleSubmit}
+            disabled={form.title.trim() === '' || form.assigneeId.length === 0}
+            >Create</Button>
           </DialogFooter>
         )}
       </DialogContent>
