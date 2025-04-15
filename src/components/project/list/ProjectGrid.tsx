@@ -9,6 +9,7 @@ interface ProjectGridProps {
   isLoading?: boolean;
 }
 
+// 프로젝트 그리드 컴포넌트
 export function ProjectGrid({ projects, onProjectClick, isLoading }: ProjectGridProps) {
   if (isLoading) {
     return (

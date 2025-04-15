@@ -31,10 +31,13 @@ export default function CreateButton({ project, refetch }: CreateButtonProps) {
     mutationFn: createProjectApi,
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['project', 'list'] })
+      // refetch vs invalidateQ
+      // refetch < windowOnfocus
       setOpen(false)
     }
   })
 
+  // windowOnFocus - 리렌더링 
   const {
     mutate: updateProjectMutation,
   } = useMutation({

@@ -66,12 +66,12 @@ export const statusColors: Record<IssueStatus, string> = {
 }
 
 export const typeIcons: Record<IssueType, string> = {
-  PROJECT: '🚀',
+  PROJECT: '📚',
   EPIC: '💡',
   STORY: '📝',
-  TASK: '🔍',
+  TASK: '✏️',
   BUG: '🐛',
-  SUB_TASK: '🔍'
+  SUB_TASK: '🔎'
 }
 export const statusLabels: Record<IssueStatus, string> = {
   TODO: '할 일',

@@ -19,7 +19,9 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
     `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
   )
 
+  // 해당 월의 일 수
   const daysInMonth = new Date(year, month + 1, 0).getDate()
+  // 해당 월의 시작 요일 (0: 일요일, 1: 월요일, ..., 6: 토요일)
   const startDay = new Date(year, month, 1).getDay()
 
   const handleDateClick = (day: number) => {
@@ -28,15 +30,22 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
     onDateSelect(dateStr)
   }
 
+  // 캘린더 셀 렌더링
   const calendarCells = Array.from({ length: daysInMonth + startDay }, (_, index) => {
+    // 시작 요일 이전은 빈 셀로 렌더링
     if (index < startDay) {
       return <div key={index} className="h-[140px]"></div>
     }
-    const day = index - startDay + 1
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-    const isSelected = selectedDate === dateStr
-    const dateIssues = issues?.filter((issue) => String(issue.dueDate) === dateStr) || []
 
+    // 일 수 계산
+    const day = index - startDay + 1
+    // 날짜 문자열 생성
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    // 선택된 날짜 체크
+    const isSelected = selectedDate === dateStr
+    // 해당 날짜의 이슈 마감일 리스트 조회
+    const dateIssues = issues?.filter((issue) => String(issue.dueDate) === dateStr) || []
+    // 프로젝트 시작일, 생성일, 마감일, 종료일 체크
     const isStartDate = project.startDate && new Date(project.startDate).toISOString().split('T')[0] === dateStr
     const isCreatedDate = project.createdDate && new Date(project.createdDate).toISOString().split('T')[0] === dateStr
     const isDueDate = project.dueDate && new Date(project.dueDate).toISOString().split('T')[0] === dateStr
@@ -51,18 +60,24 @@ export default function CustomCalendar({ project, issues, onDateSelect }: Custom
         <div className="flex items-start gap-1">
           <div className="font-bold">{day}</div>
           <div className="flex flex-wrap gap-0.5">
+            {/* Start : Blue */}
             {isStartDate && <div className="text-xs text-white bg-blue-500 px-1 py-0.5 rounded truncate max-w-[35px]">Start</div>}
+            {/* Created : Green */}
             {isCreatedDate && <div className="text-xs text-white bg-green-500 px-1 py-0.5 rounded truncate max-w-[35px]">Created</div>}
+            {/* Due : Yellow */}
             {isDueDate && <div className="text-xs text-white bg-yellow-500 px-1 py-0.5 rounded truncate max-w-[35px]">Due</div>}
+            {/* End : Red */}
             {isEndDate && <div className="text-xs text-white bg-red-500 px-1 py-0.5 rounded truncate max-w-[35px]">End</div>}
           </div>
         </div>
         <div className="mt-1 space-y-1">
+          {/* 이슈 리스트 렌더링 */}
           {dateIssues.slice(0, 3).map((issue) => (
             <div key={issue.id} className={`text-xs bg-blue-500 px-1 py-0.5 rounded truncate ${statusColors[issue.status]}`}>
               {issue.title}
             </div>
           ))}
+          {/* 이슈 리스트 렌더링 더보기 */}
           {dateIssues.length > 3 && <div className="text-xs text-white bg-black px-1 py-0.5 rounded truncate">+{dateIssues.length - 3} more</div>}
         </div>
       </div>

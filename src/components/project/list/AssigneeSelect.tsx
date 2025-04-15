@@ -25,6 +25,7 @@ interface AssigneeSelectProps {
     className?: string;
 }
 
+// 담당자 선택 필드 컴포넌트
 export function AssigneeSelect({
     selectedIds,
     onSelect,
@@ -38,16 +39,19 @@ export function AssigneeSelect({
     const [users, setUsers] = useState<User[]>(initialUsers || []);
     const [selected, setSelected] = useState<number[]>(selectedIds);
 
+    // 선택된 담당자 아이디 상태 관리
     useEffect(() => {
         setSelected(selectedIds);
     }, [selectedIds]);
 
+    // 초기 담당자 목록 로드
     useEffect(() => {
         if (!initialUsers) {
             loadUsers();
         }
     }, [initialUsers]);
 
+    // 담당자 목록 로드
     const loadUsers = async () => {
         try {
             const response = await getUsers(null);
@@ -57,6 +61,7 @@ export function AssigneeSelect({
         }
     };
 
+    // 담당자 선택 핸들러   
     const handleSelect = (userId: number) => {
         let newSelected: number[];
         

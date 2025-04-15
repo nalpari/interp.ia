@@ -7,30 +7,36 @@ import CustomCalendar from './CustomCalendar'
 
 export default function ProjectCalendar({ project }: { project: Project }) {
     const today = new Date();
+    // 오늘 날짜 문자열 생성
     const initialSelectedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    // 선택된 날짜 상태 관리
     const [selectedDate, setSelectedDate] = useState<string | null>(initialSelectedDate);
 
+    // 프로젝트 이슈 목록 조회
     const { data: issues } = useQuery({
         queryKey: ['issues', project.id],
         queryFn: () => getIssuesByProjectIssueId(project.id, null),
         staleTime: 0,
     });
 
+    // 날짜 선택 핸들러
     const handleDateSelect = (date: string) => {
         setSelectedDate(date);
     }
 
+    // 날짜 정보 가져오기
     const getDateInfo = () => {
         if (!selectedDate) return null;
-        
+        // 선택된 날짜 파싱
         const date = new Date(selectedDate);
+        // 날짜 포맷팅
         const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${date.toLocaleDateString('en-US', { weekday: 'long' })}`;
-
+        // 프로젝트 start, created, due, end 날짜 체크
         const isStartDate = project.startDate && new Date(project.startDate).toISOString().split('T')[0] === selectedDate;
         const isCreatedDate = project.createdDate && new Date(project.createdDate).toISOString().split('T')[0] === selectedDate;
         const isDueDate = project.dueDate && new Date(project.dueDate).toISOString().split('T')[0] === selectedDate;
         const isEndDate = project.endDate && new Date(project.endDate).toISOString().split('T')[0] === selectedDate;
-
+        // 선택된 날짜의 이슈 리스트 조회
         const dateIssues = issues?.filter((issue: Issue) => 
             String(issue.dueDate) === selectedDate
         ) || [];

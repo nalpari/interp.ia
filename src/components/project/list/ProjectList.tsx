@@ -10,6 +10,7 @@ import { ProjectGrid } from './ProjectGrid'
 import ProjectFilters from './ProjectFilters'
 import { useProjectListStore } from '@/store/useProjectListStore'
 
+// 프로젝트 목록 컴포넌트
 export default function ProjectList() {
   const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
   const { request, setFilter, reset } = useProjectListStore()

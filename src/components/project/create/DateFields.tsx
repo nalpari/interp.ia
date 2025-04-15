@@ -13,6 +13,7 @@ interface DateFieldsProps {
     onFieldChange: <K extends keyof ProjectRequest>(field: K, value: ProjectRequest[K]) => void;
 }
 
+// 날짜 선택 필드 컴포넌트 - 시작일, 종료일, 마감일 선택
 export function DateFields({
     project,
     form,

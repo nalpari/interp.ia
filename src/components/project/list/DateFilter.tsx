@@ -14,6 +14,7 @@ interface DateFilterProps {
     isStartEndPair?: boolean
   }
   
+  // 날짜 필터 컴포넌트
   export default function DateFilter({ label, fromDate, toDate, onFromChange, onToChange }: DateFilterProps) {
     const handleDateChange = (type: 'from' | 'to', date: Date | undefined) => {
       if (!date) return
