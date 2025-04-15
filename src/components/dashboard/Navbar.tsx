@@ -99,6 +99,7 @@ export default function Navbar(props: NavProps) {
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <NavLink href="/dashboard">Dashboard</NavLink>
                 <NavLink href="/dashboard/projects">Projects</NavLink>
+                <NavLink href="/dashboard/issues">Issues</NavLink>
                 <NavLink href="/dashboard/analytics">Analytics</NavLink>
                 <NavLink href="/dashboard/targets">Targets</NavLink>
                 <NavLink href="/dashboard/sample">Sample</NavLink>
