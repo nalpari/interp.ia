@@ -2,20 +2,10 @@ import { Issue, Project, statusColors } from '@/components/project/project-type'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SubIssueCard from './SubIssueCard'
-import { useQuery } from '@tanstack/react-query'
-import { getIssuesByProjectIssueId as getIssues } from '@/api/issue'
+import { useIssue } from '@/hooks/useIssue'
 
-interface ProjectBoardProps {
-  project: Project
-}
-
-export default function ProjectBoard({ project }: ProjectBoardProps) {
-
-  const {data: issues} = useQuery<Issue[]>({
-    queryKey: ['issues', project.id],
-    queryFn: () => getIssues(project.id, null),
-  })
-
+export default function ProjectBoard({ project }: { project: Project }) {
+  const { issues } = useIssue(project.id)
   return (
     <div className="mt-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -27,8 +17,8 @@ export default function ProjectBoard({ project }: ProjectBoardProps) {
             </div>
             <div className="bg-muted/50 p-2 rounded-b-md h-[300px] overflow-y-auto space-y-2">
               {issues
-                ?.filter((issue) => issue.status === status)
-                .map((issue) => (
+                ?.filter((issue: Issue) => issue.status === status)
+                .map((issue: Issue) => (
                   <SubIssueCard key={issue.id} issue={issue} />
                 ))}
               <Button variant="ghost" className="w-full justify-start text-muted-foreground text-sm h-auto py-2">

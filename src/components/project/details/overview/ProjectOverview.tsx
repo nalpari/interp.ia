@@ -1,3 +1,5 @@
+'use client'
+
 import { Project } from '@/components/project/project-type'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import ProjectStatCards from './ProjectStatCards'
@@ -19,7 +21,7 @@ const DetailCard = ({ title, children }: DetailCardProps) => (
 export default function ProjectOverview({ project }: { project: Project }) {
   return (
     <div className="space-y-6 mt-10">
-      <ProjectStatCards project={project} />
+      <ProjectStatCards projectId={project.id} />
       {/* 하단 큰 카드 6개 (2x3 그리드) */}
       <div className="grid grid-cols-4 gap-4">
         <DetailCard title="프로젝트 설명">

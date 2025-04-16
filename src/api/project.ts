@@ -4,7 +4,6 @@ import qs from 'qs'
 
 export async function getProjects(request: ProjectListRequest) {
   try {
-    console.log("request: ", request)
     const response = await axios.get('/api/project', {
       params: request,
       paramsSerializer: (params) => {

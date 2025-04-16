@@ -5,5 +5,5 @@ export async function PATCH(request: Request, { params }: { params: { issueId: s
   const { issueId } = params
 
   const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}/delete`)
-  return NextResponse.json({ data: response.data })
+  return NextResponse.json(response.data)
 }

@@ -12,14 +12,15 @@ export async function GET(request: Request) {
   }
 
   const response = await axiosInstance.get(`http://localhost:8080/api/issues?projectId=${projectId}`)
-  return NextResponse.json({ data: response.data })
+  console.log("response at route", response)
+  return NextResponse.json(response.data)
 }
 
 // 이슈 생성
 export async function POST(request: Request) {
   const issue: Omit<Issue, 'id'> = await request.json()
   const response = await axiosInstance.post('http://localhost:8080/api/issues', issue)
-  return NextResponse.json({ data: response.data })
+  return NextResponse.json(response.data)
 }
 
 // 이슈 업데이트 또는 삭제
@@ -30,7 +31,7 @@ export async function PATCH(request: Request) {
   // 이슈 삭제
   if (pathname.endsWith('/delete')) {
     const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}/delete`)
-    return NextResponse.json({ data: response.data })
+    return NextResponse.json(response.data)
   }
 
   // 이슈 업데이트
@@ -43,5 +44,5 @@ export async function PATCH(request: Request) {
   const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}`, {
     [updateField]: updateValue,
   })
-  return NextResponse.json({ data: response.data })
+  return NextResponse.json(response.data)
 }

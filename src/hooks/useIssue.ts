@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Issue } from '@/types/issue'
 
-export function useIssue(projectId?: number, issueId?: number) {
+export function useIssue(projectId?: number | null, issueId?: number | null) {
   const queryClient = useQueryClient()
 
   // 이슈 목록 조회
@@ -12,8 +12,7 @@ export function useIssue(projectId?: number, issueId?: number) {
     queryFn: async () => {
       if (!projectId) return []
       const response = await fetch(`/api/issue?projectId=${projectId}`)
-      const data = await response.json()
-      return data.data
+      return response.json()
     },
     enabled: !!projectId,
   })
@@ -24,8 +23,7 @@ export function useIssue(projectId?: number, issueId?: number) {
     queryFn: async () => {
       if (!issueId) return null
       const response = await fetch(`/api/issue/${issueId}`)
-      const data = await response.json()
-      return data.data
+      return response.json()
     },
     enabled: !!issueId,
   })
@@ -40,8 +38,7 @@ export function useIssue(projectId?: number, issueId?: number) {
         },
         body: JSON.stringify(issue),
       })
-      const data = await response.json()
-      return data.data
+      return response.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] })
@@ -58,8 +55,7 @@ export function useIssue(projectId?: number, issueId?: number) {
         },
         body: JSON.stringify({ updateField: field, updateValue: value }),
       })
-      const data = await response.json()
-      return data.data
+      return response.json()
     },
     onSuccess: (_, { issueId }) => {
       queryClient.invalidateQueries({ queryKey: ['issues'] })
@@ -73,8 +69,7 @@ export function useIssue(projectId?: number, issueId?: number) {
       const response = await fetch(`/api/issue/${issueId}/delete`, {
         method: 'PATCH',
       })
-      const data = await response.json()
-      return data.data
+      return response.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['issues'] })

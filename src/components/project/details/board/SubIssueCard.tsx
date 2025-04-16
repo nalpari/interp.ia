@@ -2,7 +2,6 @@ import { Badge } from '@/components/ui/badge'
 import { Issue, priorityLabels, typeIcons } from '../../project-type'
 
 export default function SubIssueCard({ issue }: { issue: Issue }) {
-  console.log(issue)
   const formattedDueDate = new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (

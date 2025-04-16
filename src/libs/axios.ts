@@ -49,6 +49,8 @@ axiosInstance.interceptors.response.use(
         const refreshToken = session.refreshToken
 
         if (!refreshToken) {
+          // 임시 에러 처리
+          cookieStore.delete('session')
           throw new Error('No refresh token available')
         }
 

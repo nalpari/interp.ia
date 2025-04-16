@@ -6,7 +6,7 @@ export async function GET(request: Request, { params }: { params: { issueId: str
   const { issueId } = params
 
   const response = await axiosInstance.get(`http://localhost:8080/api/issues/${issueId}`)
-  return NextResponse.json({ data: response.data })
+  return NextResponse.json(response.data)
 }
 
 // 이슈 업데이트
@@ -21,5 +21,5 @@ export async function PATCH(request: Request, { params }: { params: { issueId: s
   const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}`, {
     [updateField]: updateValue,
   })
-  return NextResponse.json({ data: response.data })
+  return NextResponse.json(response.data)
 }

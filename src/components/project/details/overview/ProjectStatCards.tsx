@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Issue, IssueStatus, Project } from '@/components/project/project-type'
-import { getIssuesByProjectIssueId } from '@/api/issue'
-import { useQuery } from '@tanstack/react-query'
+import { Issue, Project } from '@/components/project/project-type'
+import { useIssue } from '@/hooks/useIssue'
 
-export default function ProjectStatCards({ project }: { project: Project }) {
-  const { data: issues } = useQuery<Issue[]>({
-    queryKey: ['issues', project.id],
-    queryFn: () => getIssuesByProjectIssueId(project.id, null),
-  })
+
+export default function ProjectStatCards({ projectId }: { projectId: number }) {
+  const { issues : issuesData } = useIssue(projectId)
+  console.log("issues at stat cards", issuesData)
+
+  const issues = issuesData || []
+
   // 지난 7일
   const sevenDaysToNow = new Date();
   sevenDaysToNow.setDate(sevenDaysToNow.getDate() - 7);
@@ -20,7 +21,7 @@ export default function ProjectStatCards({ project }: { project: Project }) {
   today.setHours(0, 0, 0, 0);  
 
   // 다음 7일 이내 마감 예정 이슈 수
-  const willBeCompletedIssues = issues?.filter((issue) => {
+  const willBeCompletedIssues = issues.filter((issue: Issue) => {
     if (!issue.dueDate) return false;
     const dueDate = new Date(issue.dueDate);
     dueDate.setHours(0, 0, 0, 0);  
@@ -28,7 +29,7 @@ export default function ProjectStatCards({ project }: { project: Project }) {
   }).length;
 
   // 지난 7일 이내 만든 이슈 수
-  const createdIssues = issues?.filter((issue) => {
+  const createdIssues = issues.filter((issue: Issue) => {
     if(!issue.createdDate) return false;
     const createdDate = new Date(issue.createdDate);
     createdDate.setHours(0, 0, 0, 0);
