@@ -1,6 +1,6 @@
 import { DateField } from "./DateField";
 import { cn } from "@/libs/utils";
-import { ProjectRequest } from "@/components/project/project-type";
+import { ProjectRequest } from "@/types/project";
 
 interface DateFieldsProps {
     project?: any;

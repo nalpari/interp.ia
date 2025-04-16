@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Issue, Project, statusColors } from '../../project-type'
+import { Issue, Project, statusColors } from '@/types/project'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 

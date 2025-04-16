@@ -1,6 +1,6 @@
 'use client'
 
-import { Project } from '@/components/project/project-type'
+import { Project } from '@/types/project'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import ProjectStatCards from './ProjectStatCards'
 

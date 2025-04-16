@@ -1,6 +1,6 @@
 'use client'
 
-import { ProjectListRequest, IssueStatus, Priority, statusLabels, priorityLabels } from '@/components/project/project-type'
+import { ProjectListRequest, IssueStatus, Priority, statusLabels, priorityLabels } from '@/types/project'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'

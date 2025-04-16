@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/libs/utils'
-import { Priority, IssueStatus, Project, ProjectRequest } from '@/components/project/project-type'
+import { Project, ProjectRequest } from "@/types/project";
+import { IssueStatus, IssuePriority as Priority } from '@/types/issue'
 import { DateFields } from './DateFields'
 import { AssigneeSelect } from '../list/AssigneeSelect'
 import { useDebounce } from '@/hooks/useDebounce'

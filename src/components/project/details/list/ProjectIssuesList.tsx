@@ -1,5 +1,5 @@
 import { IssueAccordion } from '@/components/issue/IssueAccordion'
-import { Project } from '@/components/project/project-type'
+import { Project } from '@/types/project'
 
 interface ProjectIssuesListProps {
   project: Project

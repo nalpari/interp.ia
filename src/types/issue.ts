@@ -23,6 +23,11 @@ export enum IssuePriority {
   LOW = 'LOW',
 }
 
+export enum IssueCategory {
+  PROJECT = 'PROJECT',
+  ISSUE = 'ISSUE',
+}
+
 export type UserType = {
   id: number
   email: string

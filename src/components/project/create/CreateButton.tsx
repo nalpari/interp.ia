@@ -1,13 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Pencil, Plus } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { createProject as createProjectApi, updateProject as updateProjectApi } from '@/api/project'
+import { useState } from 'react'
+import { createProject as createProjectApi } from '@/api/project'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Project, ProjectRequest } from '../project-type'
 import { ProjectForm } from './ProjectForm'
+import { ProjectRequest, Project } from '@/types/project'
 
 const initialFormData: ProjectRequest = {
   title: '',

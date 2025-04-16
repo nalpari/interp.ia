@@ -1,6 +1,6 @@
 'use client'
 
-import { Project } from '@/components/project/project-type'
+import { Project } from '@/types/project-type'
 import ExpandingCard from '../../ExpandingCard'
 
 interface ProjectGridProps {

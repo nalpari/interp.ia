@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { Project } from '@/components/project/project-type'
+import { Project } from '@/types/project'
 import { deleteProject, getProject, updateProject as updateProjectApi } from '@/api/project'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'

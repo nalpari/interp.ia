@@ -1,4 +1,4 @@
-import { ProjectListRequest, ProjectRequest } from '@/components/project/project-type'
+import { ProjectListRequest, ProjectRequest } from '@/types/project'
 import axios from 'axios'
 import qs from 'qs'
 
@@ -15,6 +15,7 @@ export async function getProjects(request: ProjectListRequest) {
     })
     return response.data || []
   } catch (error) {
+    console.error('Error in getProjects:', error)
     return []
   }
 }
@@ -39,16 +40,16 @@ export async function getProject(id: string) {
   }
 }
 
-export async function updateProject(request: {id: number, key: string, value: object | string}) {
+export async function updateProject(request: { id: number; key: string; value: object | string }) {
   try {
     const response = await axios.patch(`/api/project/${request.id}`, {
-        [request.key]: request.value
-      });
+      [request.key]: request.value,
+    })
     return response.data
   } catch (error) {
     console.error('Error in updateProject:', error)
     throw error
-  } 
+  }
 }
 
 export async function deleteProject(id: number) {

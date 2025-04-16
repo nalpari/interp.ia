@@ -1,4 +1,4 @@
-import { ProjectListRequest } from "@/components/project/project-type";
+import { ProjectListRequest } from "@/types/project";
 import { create } from "zustand";
 
 const initialRequest: ProjectListRequest = {

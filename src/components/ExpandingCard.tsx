@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Badge } from './ui/badge'
-import { Project } from './project/project-type'
+import { Project } from '../types/project-type'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { CalendarIcon } from 'lucide-react'
 

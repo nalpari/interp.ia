@@ -2,8 +2,7 @@
 
 import { getProjects } from '@/api/project'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import { Project, ProjectListRequest } from '@/components/project/project-type'
+import { Project, ProjectListRequest } from '@/types/project'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/useUserStore'
 import { ProjectGrid } from './ProjectGrid'
@@ -13,7 +12,7 @@ import { useProjectListStore } from '@/store/useProjectListStore'
 // 프로젝트 목록 컴포넌트
 export default function ProjectList() {
   const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
-  const { request, setFilter, reset } = useProjectListStore()
+  const { request, setFilter } = useProjectListStore()
   const router = useRouter()
 
   const { data: projects, isLoading } = useQuery<Project[]>({
@@ -49,16 +48,8 @@ export default function ProjectList() {
 
   return (
     <div className="space-y-6">
-      <ProjectFilters 
-        request={request} 
-        onFilterChange={handleFilterChange} 
-        onMyAssigneeChange={handleMyAssigneeChange}
-      />
-      <ProjectGrid 
-        projects={projects || []} 
-        onProjectClick={handleProjectClick} 
-        isLoading={isLoading} 
-      />
+      <ProjectFilters request={request} onFilterChange={handleFilterChange} onMyAssigneeChange={handleMyAssigneeChange} />
+      <ProjectGrid projects={projects || []} onProjectClick={handleProjectClick} isLoading={isLoading} />
     </div>
   )
 }
