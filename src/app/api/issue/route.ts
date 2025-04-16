@@ -1,22 +1,47 @@
 import { axiosInstance } from '@/libs/axios'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { Issue } from '@/types/issue'
 
-const backendURL = process.env.NEXT_PUBLIC_API_URL;
+// 특정 프로젝트 하위 이슈 목록 조회
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const projectId = searchParams.get('projectId')
 
-export async function GET(request: NextRequest) {
-  try {
-    const searchParams = request.nextUrl.searchParams
-    const response = await axiosInstance.get(`${backendURL}/api/issues`, {
-      params: Object.fromEntries(searchParams),
-    })
-    return NextResponse.json(response.data)
-  } catch (error : any) {
-    console.error('Error in getIssuesByProjectIssueId:', error, {
-        message: error.message,
-        stack: error.stack,
-        status: error.response?.status,
-        data: error.response?.data,
-    })
-    return NextResponse.json({ error: 'Error in issue API route' }, { status: 500 })
+  if (!projectId) {
+    return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
   }
+
+  const response = await axiosInstance.get(`http://localhost:8080/api/issues?projectId=${projectId}`)
+  return NextResponse.json({ data: response.data })
+}
+
+// 이슈 생성
+export async function POST(request: Request) {
+  const issue: Omit<Issue, 'id'> = await request.json()
+  const response = await axiosInstance.post('http://localhost:8080/api/issues', issue)
+  return NextResponse.json({ data: response.data })
+}
+
+// 이슈 업데이트 또는 삭제
+export async function PATCH(request: Request) {
+  const { pathname } = new URL(request.url)
+  const issueId = pathname.split('/').pop()
+
+  // 이슈 삭제
+  if (pathname.endsWith('/delete')) {
+    const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}/delete`)
+    return NextResponse.json({ data: response.data })
+  }
+
+  // 이슈 업데이트
+  const { updateField, updateValue } = await request.json()
+
+  if (!issueId || !updateField || !updateValue) {
+    return NextResponse.json({ error: 'Issue ID, field, and value are required' }, { status: 400 })
+  }
+
+  const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}`, {
+    [updateField]: updateValue,
+  })
+  return NextResponse.json({ data: response.data })
 }
