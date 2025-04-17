@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useCallback } from 'react'
-import { Plus, X, Edit2 } from 'lucide-react'
+import { Plus, X, Edit2, Trash2 } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -20,6 +20,7 @@ import { useIssue } from '@/hooks/useIssue'
 import { useIssueStore } from '@/store/useIssueStore'
 import { Issue, IssueType, UserType } from '@/types/issue'
 import { IssueRef } from '@/types/project'
+import { useUserStore } from '@/store/useUserStore'
 
 const formatDateToYYYYMMDD = (date: Date | null) => {
   if (!date) return null
@@ -352,7 +353,7 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
   return (
     <>
       {/* 상위 프로젝트 */}
-      <div className="space-y-1">
+      <div className="space-y-1 pb">
         <h3 className="text-sm font-medium">상위 프로젝트</h3>
         {issue.parentProject ? (
           <div
@@ -419,7 +420,9 @@ export function IssueDetail({
   onSelectIssue: (issue: Issue) => void
 }) {
   const { setSelectedIssue, updateIssueField } = useIssueStore()
-  const { updateIssue } = useIssue(projectId, issue.id)
+  const { updateIssue, deleteIssue } = useIssue(projectId, issue.id)
+
+  const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)
 
   // 이슈 필드 변경 감지 및 업데이트
   const checkIssueUpdate = useCallback(
@@ -458,11 +461,26 @@ export function IssueDetail({
             />
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          {CloseIcon}
-        </Button>
+        <div>
+          {loginedUserInfo.email === issue.creator.email && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                if (confirm('삭제하시겠습니까?')) {
+                  deleteIssue(issue.id)
+                }
+              }}
+            >
+              <Trash2 />
+            </Button>
+          )}
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            {CloseIcon}
+          </Button>
+        </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-10">
         <div className="space-y-4">
           {/* 이슈 상태 */}
           <IssueBadges issue={issue} onUpdate={checkIssueUpdate} />

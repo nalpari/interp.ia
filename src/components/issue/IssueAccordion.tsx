@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ChevronUp } from 'lucide-react'
+import { ChevronUp, Plus } from 'lucide-react'
 
 import { Accordion, AccordionContent, AccordionItem } from '@/components/ui/accordion'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -25,8 +25,6 @@ export function IssueAccordion({ projectId }: { projectId: number }) {
   const { selectedIssue, setSelectedIssue, clearSelectedIssue } = useIssueStore()
   const { issues, isIssuesLoading } = useIssue(projectId)
 
-  console.log('issues', issues)
-
   // 이슈 선택 핸들러
   const handleSelectIssue = (issue: Issue) => {
     setSelectedIssue(issue)
@@ -44,7 +42,9 @@ export function IssueAccordion({ projectId }: { projectId: number }) {
             {issues.length > 0 ? (
               <Accordion type="multiple" className="w-full space-y-1">
                 {issues.map((issue: Issue) => (
-                  <IssueNode key={issue.id} issue={issue} level={0} onSelectIssue={handleSelectIssue} />
+                  <div key={issue.id}>
+                    <IssueNode key={issue.id} issue={issue} level={0} onSelectIssue={handleSelectIssue} />
+                  </div>
                 ))}
               </Accordion>
             ) : (
@@ -69,41 +69,37 @@ export function IssueAccordion({ projectId }: { projectId: number }) {
  * 하위 이슈가 있는 경우 아코디언으로 표시하고, 없는 경우 단순 아이템으로 표시
  */
 function IssueNode({ issue, level, onSelectIssue }: { issue: Issue | IssueRef; level: number; onSelectIssue: (issue: Issue) => void }) {
-  // 아코디언 열림/닫힘 상태 관리
   const [isOpen, setIsOpen] = useState(false)
-  // 하위 이슈 존재 여부 확인
   const hasChildren = issue.subIssues && issue.subIssues.length > 0
-  // 현재 선택된 이슈 가져오기
   const { selectedIssue } = useIssueStore()
 
-  // 아코디언 토글 핸들러
   const toggleAccordion = () => {
     setIsOpen(!isOpen)
   }
 
-  // 이슈 노드 스타일
   const nodeStyle = {
     '--level': level,
   } as React.CSSProperties
 
-  // 이슈 노드 클래스
   const nodeClass = cn(
-    'flex items-center py-2 px-3 rounded-md transition-colors cursor-pointer h-10',
+    'flex items-center py-2 px-3 rounded-md transition-colors cursor-pointer h-10 group',
     'ml-[calc(var(--level)*1rem)]',
     getBgColor(issue.status),
     selectedIssue?.id === issue.id && 'border-2 border-primary',
   )
 
-  // 단일 이슈 노드 (하위 이슈 없음)
   if (!hasChildren) {
     return (
       <div className={nodeClass} style={nodeStyle}>
-        <IssueInfo issue={issue} onClick={() => onSelectIssue(issue as Issue)} />
+        <IssueInfo 
+          issue={issue} 
+          onClick={() => onSelectIssue(issue as Issue)} 
+          hideStatus={!!selectedIssue}
+        />
       </div>
     )
   }
 
-  // 아코디언 이슈 노드 (하위 이슈 있음)
   return (
     <Accordion type="single" collapsible value={isOpen ? issue.id.toString() : ''} className="border-none">
       <AccordionItem value={issue.id.toString()} className="border-none">
@@ -115,7 +111,11 @@ function IssueNode({ issue, level, onSelectIssue }: { issue: Issue | IssueRef; l
             onSelectIssue={onSelectIssue}
             issue={issue as Issue}
           >
-            <IssueInfo issue={issue as Issue} onClick={() => onSelectIssue(issue as Issue)} />
+            <IssueInfo 
+              issue={issue as Issue} 
+              onClick={() => onSelectIssue(issue as Issue)} 
+              hideStatus={!!selectedIssue}
+            />
           </CustomAccordionTrigger>
         </div>
         <AccordionContent className="pt-1 pb-0 px-0 overflow-visible">
@@ -164,20 +164,18 @@ function CustomAccordionTrigger({
   onSelectIssue: (issue: Issue) => void
   issue: Issue
 }) {
-  // 토글 아이콘 클릭 핸들러
   const handleToggleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     onClick()
   }
 
-  // 이슈 선택 핸들러
   const handleIssueClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     onSelectIssue(issue)
   }
 
   return (
-    <div className={cn('flex items-center gap-2 py-2 px-3 rounded-md transition-colors w-full h-10', className)}>
+    <div className={cn('flex items-center gap-2 py-2 px-3 rounded-md transition-colors w-full h-10 group', className)}>
       <div
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full hover:bg-accent hover:text-accent-foreground cursor-pointer"
         onClick={handleToggleClick}

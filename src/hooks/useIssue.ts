@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Issue } from '@/types/issue'
+import { Issue, IssueRequest } from '@/types/issue'
 
 export function useIssue(projectId?: number | null, issueId?: number | null) {
   const queryClient = useQueryClient()
@@ -30,7 +30,8 @@ export function useIssue(projectId?: number | null, issueId?: number | null) {
 
   // 이슈 생성
   const { mutate: createIssueMutation } = useMutation({
-    mutationFn: async (issue: Omit<Issue, 'id'>) => {
+    mutationFn: async (issue: IssueRequest) => {
+      console.log('issue at hook', issue)
       const response = await fetch('/api/issue', {
         method: 'POST',
         headers: {

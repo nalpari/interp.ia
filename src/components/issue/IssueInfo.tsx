@@ -1,17 +1,22 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Badge } from '../ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { IssueBadge } from './IssueBadge'
 import { MoreIcon } from './icons'
+import { Button } from '../ui/button'
+import { Plus } from 'lucide-react'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
 
 import { cn } from '@/libs/utils'
 
-import { Issue, UserType } from '@/types/issue'
+import { Issue, IssueRequest, UserType, IssueStatus, IssuePriority } from '@/types/issue'
 import { IssueRef } from '@/types/project'
+import { IssueCreateForm } from './IssueCreateForm'
+import { useIssue } from '@/hooks/useIssue'
 
 /**
  * 담당자 아바타 컴포넌트
@@ -60,23 +65,76 @@ function Assignees({ users }: { users: UserType[] }) {
 /**
  * 이슈 컴포넌트
  */
-export function IssueInfo({ issue, className, onClick }: { issue: Issue | IssueRef; className?: string; onClick?: () => void }) {
+export function IssueInfo({
+  issue,
+  className,
+  onClick,
+  hideStatus = false,
+}: {
+  issue: Issue | IssueRef
+  className?: string
+  onClick?: () => void
+  hideStatus?: boolean
+}) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const { createIssue } = useIssue(null, issue.id)
+
+  const handleAddSubIssue = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsDialogOpen(true)
+  }
+
+  const handleSubmit = (formData: IssueRequest) => {
+    createIssue(formData)
+    setIsDialogOpen(false)
+  }
+
   return (
-    <div className={cn('flex items-center w-full h-10', className)} onClick={onClick}>
-      <IssueBadge type="type" value={issue.type} />
-      <Badge variant="outline" className="mr-2 px-1 text-xs">
-        #{issue.id}
-      </Badge>
-      <span className="mr-auto truncate" title={issue.title}>
-        {issue.title}
-      </span>
-      <div className="flex items-center gap-2 ml-4">
-        <Assignees users={issue.assignee || []} />
+    <>
+      <div className={cn('flex items-center w-full h-10 group', className)} onClick={onClick}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-2"
+              onClick={handleAddSubIssue}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>하위 이슈 추가</p>
+          </TooltipContent>
+        </Tooltip>
+        <IssueBadge type="type" value={issue.type} />
+        <Badge variant="outline" className="mr-2 px-1 text-xs">
+          #{issue.id}
+        </Badge>
+        <span className="mr-auto truncate" title={issue.title}>
+          {issue.title}
+        </span>
+        <div className="flex items-center gap-2 ml-4">
+          <Assignees users={issue.assignee || []} />
+        </div>
+        {!hideStatus && (
+          <div className="flex items-center gap-2 ml-4">
+            <IssueBadge type="priority" value={issue.priority} />
+            <IssueBadge type="status" value={issue.status} />
+          </div>
+        )}
       </div>
-      <div className="flex items-center gap-2 ml-4">
-        <IssueBadge type="priority" value={issue.priority} />
-        <IssueBadge type="status" value={issue.status} />
-      </div>
-    </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Issue</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <IssueCreateForm parentIssue={issue as Issue} onSubmit={handleSubmit} parentProjectId={null} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import { Project, statusColors } from '@/types/project'
-import { Issue } from '@/types/issue'
+import { Issue, IssueRequest } from '@/types/issue'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SubIssueCard from './SubIssueCard'
@@ -7,9 +7,15 @@ import { useIssue } from '@/hooks/useIssue'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useDrop } from 'react-dnd'
-
+import { useState } from 'react'
+import { IssueDetail } from '@/components/issue/IssueDetail'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { Card } from '@/components/ui/card'
+import { IssueCreateForm } from '@/components/issue/IssueCreateForm'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 export default function ProjectBoard({ project }: { project: Project }) {
   const { issues, updateIssue } = useIssue(project.id)
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
 
   const handleDrop = (issueId: number, newStatus: string) => {
     updateIssue({ issueId, field: 'status', value: newStatus })
@@ -27,23 +33,54 @@ export default function ProjectBoard({ project }: { project: Project }) {
               issues={issues?.filter((issue: Issue) => issue.status === status) || []}
               onDrop={handleDrop}
               issueCount={project.subIssues?.filter((issue) => issue.status === status).length || 0}
+              onSelectIssue={setSelectedIssue}
+              projectId={project.id}
             />
           ))}
         </div>
       </div>
+
+      {selectedIssue && (
+        <TooltipProvider>
+          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setSelectedIssue(null)}>
+            {/* 오른쪽 패널 - 전체 화면 높이, 스크롤 가능한 영역 포함 */}
+            <div
+              className="absolute right-0 top-0 bottom-0 w-1/2 bg-background border-l shadow-lg flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* 이 div가 실제 스크롤 가능한 영역 */}
+              <div className="h-full overflow-y-auto">
+                <Card className="p-2">
+                  <IssueDetail issue={selectedIssue} onSelectIssue={setSelectedIssue} onClose={() => setSelectedIssue(null)} />
+                </Card>
+              </div>
+            </div>
+          </div>
+        </TooltipProvider>
+      )}
     </DndProvider>
   )
 }
 
 interface StatusColumnProps {
+  projectId: number
   status: string
   color: string
   issues: Issue[]
   onDrop: (issueId: number, newStatus: string) => void
   issueCount: number
+  onSelectIssue: (issue: Issue) => void
 }
 
-function StatusColumn({ status, color, issues, onDrop, issueCount }: StatusColumnProps) {
+function StatusColumn({ status, color, issues, onDrop, issueCount, onSelectIssue, projectId }: StatusColumnProps) {
+  const { createIssue } = useIssue(projectId)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleCreateIssue = (formData: IssueRequest) => {
+    createIssue(formData)
+    setIsOpen(false)
+  }
+
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'issue',
     drop: (item: { id: number }) => onDrop(item.id, status),
@@ -58,18 +95,29 @@ function StatusColumn({ status, color, issues, onDrop, issueCount }: StatusColum
         <h3 className="font-bold text-lg">{status}</h3>
         <span className="text-muted-foreground">{issueCount} issues</span>
       </div>
-      <div
-        ref={drop as any}
-        className={`bg-muted/50 p-2 rounded-b-md h-[300px] overflow-y-auto space-y-2 ${
-          isOver ? 'ring-2 ring-primary' : ''
-        }`}
-      >
+      <div ref={drop as any} className={`bg-muted/50 p-2 rounded-b-md h-[300px] overflow-y-auto space-y-2 ${isOver ? 'ring-2 ring-primary' : ''}`}>
         {issues.map((issue: Issue) => (
-          <SubIssueCard key={issue.id} issue={issue} />
+          <SubIssueCard key={issue.id} issue={issue} onSelectIssue={onSelectIssue} />
         ))}
-        <Button variant="ghost" className="w-full justify-start text-muted-foreground text-sm h-auto py-2">
-          <Plus /> Add Issue
-        </Button>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <div className="w-full">
+              <Button variant="ghost" className="w-full justify-start text-muted-foreground text-sm h-auto py-2">
+                <Plus /> Add Issue
+              </Button>
+            </div>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Issue</DialogTitle>
+            </DialogHeader>
+            <IssueCreateForm 
+              parentIssue={null} 
+              onSubmit={handleCreateIssue} 
+              parentProjectId={projectId} 
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

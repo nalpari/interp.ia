@@ -65,3 +65,20 @@ export type Issue = {
   subIssues?: IssueRef[] | null
   relatedIssues?: IssueRef[] | null
 }
+
+export type IssueRequest = {
+  title: string
+  subTitle: string | null
+  type: IssueType
+  status: IssueStatus | null
+  priority: IssuePriority | null
+  assigneeId: number[] | null
+  dueDate: Date | null
+  startDate: Date | null
+  endDate: Date | null
+  description: string | null
+  tag: string[] | null
+  parentProjectId: number
+  parentIssueId: number | null
+  relatedIssuesId: number[] | null
+}

@@ -1,6 +1,6 @@
 import { axiosInstance } from '@/libs/axios'
 import { NextResponse } from 'next/server'
-import { Issue } from '@/types/issue'
+import { Issue, IssueRequest } from '@/types/issue'
 
 // 특정 프로젝트 하위 이슈 목록 조회
 export async function GET(request: Request) {
@@ -12,15 +12,24 @@ export async function GET(request: Request) {
   }
 
   const response = await axiosInstance.get(`http://localhost:8080/api/issues?projectId=${projectId}`)
-  console.log("response at route", response)
+  console.log('response at route', response)
   return NextResponse.json(response.data)
 }
 
 // 이슈 생성
 export async function POST(request: Request) {
-  const issue: Omit<Issue, 'id'> = await request.json()
-  const response = await axiosInstance.post('http://localhost:8080/api/issues', issue)
-  return NextResponse.json(response.data)
+  try {
+    const body= await request.json()
+    console.log('body at route', body)
+    const response = await axiosInstance.post('http://localhost:8080/api/issues', body)
+    return NextResponse.json(response.data)
+  } catch (error) {
+    console.error('Error in issue API route:', error)
+    return NextResponse.json(
+      { error: 'Failed to create issue', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    )
+  }
 }
 
 // 이슈 업데이트 또는 삭제

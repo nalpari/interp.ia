@@ -1,9 +1,12 @@
 import { Issue } from '@/types/issue'
 import { IssueBadge } from '@/components/issue/IssueBadge'
 import { useDrag } from 'react-dnd'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
-export default function SubIssueCard({ issue }: { issue: Issue }) {
-  const formattedDueDate = issue.dueDate ? new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : 'No due date'
+export default function SubIssueCard({ issue, onSelectIssue }: { issue: Issue; onSelectIssue: (issue: Issue) => void }) {
+  const formattedDueDate = issue.dueDate
+    ? new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+    : 'No due date'
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'issue',
@@ -14,20 +17,23 @@ export default function SubIssueCard({ issue }: { issue: Issue }) {
   }))
 
   return (
-    <div
-      ref={drag as any}
-      className={`bg-white dark:bg-gray-800 rounded-md p-4 cursor-move ${
-        isDragging ? 'opacity-50' : ''
-      }`}
-      title={`기한날짜: ${formattedDueDate}`}
-    >
-      <div className="flex justify-between items-center">
-        <p>{issue.title}</p>
-        <div className="flex items-center gap-2">
-          <IssueBadge type="type" value={issue.type} />
-          <IssueBadge type="priority" value={issue.priority} />
+    <TooltipProvider>
+      <div
+        ref={drag as any}
+        className={`bg-white dark:bg-gray-800 rounded-md p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
+          isDragging ? 'opacity-50' : ''
+        }`}
+        title={`기한날짜: ${formattedDueDate}`}
+        onClick={() => onSelectIssue(issue)}
+      >
+        <div className="flex justify-between items-center">
+          <p>{issue.title}</p>
+          <div className="flex items-center gap-2">
+            <IssueBadge type="type" value={issue.type} />
+            <IssueBadge type="priority" value={issue.priority} />
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }
