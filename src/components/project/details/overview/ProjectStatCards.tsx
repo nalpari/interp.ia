@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Issue } from '@/types/project'
+import { Issue } from '@/types/issue'
 import { useIssue } from '@/hooks/useIssue'
 import { useHistory } from '@/hooks/useHistory'
 import { IssueCategory, IssueStatus } from '@/types/issue'

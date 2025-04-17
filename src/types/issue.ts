@@ -1,3 +1,7 @@
+import { IssueRef, ProjectRef } from "./project"
+
+import { Project } from "./project"
+
 export enum IssueType {
   PROJECT = 'PROJECT',
   EPIC = 'EPIC',
@@ -44,28 +48,20 @@ export type Issue = {
   id: number
   title: string
   subTitle: string | null
-  type: string
-  status: string | null
-  priority: string | null
+  type: IssueType
+  status: IssueStatus
+  priority: IssuePriority
   creator: UserType
   assignee: UserType[] | null
-  createdDate: string
-  updatedDate: string
-  dueDate: string | null
-  startDate: string | null
-  endDate: string | null
+  createdDate: Date
+  updatedDate: Date
+  dueDate: Date | null
+  startDate: Date | null
+  endDate: Date | null
   description: string | null
   tag: string[]
-  parentProject?: {
-    id: number
-    title: string
-    type: string
-    status: string | null
-    priority: string | null
-    creator: UserType
-    assignee: UserType[] | null
-  } | null
-  parentIssue?: Issue | null
-  subIssues?: Issue[] | null
-  relatedIssues?: Issue[] | null
+  parentProject?: ProjectRef | null
+  parentIssue?: IssueRef | null
+  subIssues?: IssueRef[] | null
+  relatedIssues?: IssueRef[] | null
 }

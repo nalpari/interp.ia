@@ -1,9 +1,9 @@
-import { Issue } from '@/types/project'
+import { Issue } from '@/types/issue'
 import { IssueBadge } from '@/components/issue/IssueBadge'
 import { useDrag } from 'react-dnd'
 
 export default function SubIssueCard({ issue }: { issue: Issue }) {
-  const formattedDueDate = new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+  const formattedDueDate = issue.dueDate ? new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : 'No due date'
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'issue',

@@ -11,6 +11,7 @@ import { MoreIcon } from './icons'
 import { cn } from '@/libs/utils'
 
 import { Issue, UserType } from '@/types/issue'
+import { IssueRef } from '@/types/project'
 
 /**
  * 담당자 아바타 컴포넌트
@@ -59,7 +60,7 @@ function Assignees({ users }: { users: UserType[] }) {
 /**
  * 이슈 컴포넌트
  */
-export function IssueInfo({ issue, className, onClick }: { issue: Issue; className?: string; onClick?: () => void }) {
+export function IssueInfo({ issue, className, onClick }: { issue: Issue | IssueRef; className?: string; onClick?: () => void }) {
   return (
     <div className={cn('flex items-center w-full h-10', className)} onClick={onClick}>
       <IssueBadge type="type" value={issue.type} />

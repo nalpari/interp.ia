@@ -1,5 +1,5 @@
 import { Project, statusColors } from '@/types/project'
-import { Issue } from '@/types/project'
+import { Issue } from '@/types/issue'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SubIssueCard from './SubIssueCard'

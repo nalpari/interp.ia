@@ -19,6 +19,7 @@ import { cn } from '@/libs/utils'
 import { useIssue } from '@/hooks/useIssue'
 import { useIssueStore } from '@/store/useIssueStore'
 import { Issue, IssueType, UserType } from '@/types/issue'
+import { IssueRef } from '@/types/project'
 
 const formatDateToYYYYMMDD = (date: Date | null) => {
   if (!date) return null
@@ -28,7 +29,7 @@ const formatDateToYYYYMMDD = (date: Date | null) => {
   return `${year}-${month}-${day}`
 }
 
-const formatDateDisplay = (dateString: string | null) => {
+const formatDateDisplay = (dateString: string | null | Date) => {
   if (!dateString) return 'Not set'
   return new Date(dateString).toLocaleDateString(undefined, {
     year: 'numeric',
@@ -37,7 +38,7 @@ const formatDateDisplay = (dateString: string | null) => {
   })
 }
 
-const formatDateTime = (dateString: string | null) => {
+const formatDateTime = (dateString: string | null | Date) => {
   if (!dateString) return 'Not set'
   return new Date(dateString).toLocaleString(undefined, {
     year: 'numeric',
@@ -49,7 +50,7 @@ const formatDateTime = (dateString: string | null) => {
 }
 
 // 날짜 포맷팅 유틸리티 함수
-function EditableDate({ label, date, onDateChange }: { label: string; date: string | null; onDateChange: (date: Date | null) => void }) {
+function EditableDate({ label, date, onDateChange }: { label: string; date: Date | null; onDateChange: (date: Date | null) => void }) {
   const handleDateSelect = (date: Date | undefined) => {
     onDateChange(date || null)
   }
@@ -322,6 +323,30 @@ function IssueBadges({ issue, onUpdate }: { issue: Issue; onUpdate: (field: keyo
   )
 }
 
+function IssueRefInfo({ issueRef, onSelectIssue }: { issueRef: IssueRef; onSelectIssue: (issue: Issue) => void }) {
+  const { issue: issueData, isIssueLoading } = useIssue(null, issueRef.id)
+
+  const handleClick = () => {
+    if (issueData) {
+      onSelectIssue(issueData)
+    }
+  }
+
+  if (isIssueLoading) {
+    return <div className="text-sm text-muted-foreground">Loading...</div>
+  }
+
+  if (!issueData) {
+    return <div className="text-sm text-muted-foreground">Issue not found</div>
+  }
+
+  return (
+    <div className="cursor-pointer hover:bg-muted/50" onClick={handleClick}>
+      <IssueInfo issue={issueData} />
+    </div>
+  )
+}
+
 // 이슈 관계 컴포넌트
 function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue: (issue: Issue) => void }) {
   return (
@@ -330,8 +355,11 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
       <div className="space-y-1">
         <h3 className="text-sm font-medium">상위 프로젝트</h3>
         {issue.parentProject ? (
-          <div onClick={() => onSelectIssue({ ...issue.parentProject, type: IssueType.PROJECT } as Issue)}>
-            <IssueInfo issue={{ ...issue.parentProject, type: IssueType.PROJECT } as Issue} />
+          <div
+            className="cursor-pointer hover:bg-muted/50"
+            onClick={() => onSelectIssue({ ...issue.parentProject, type: IssueType.PROJECT } as unknown as Issue)}
+          >
+            <IssueInfo issue={{ ...issue.parentProject, type: IssueType.PROJECT } as unknown as Issue} />
           </div>
         ) : (
           <div className="text-sm text-muted-foreground italic">Not set</div>
@@ -342,9 +370,7 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
       <div className="space-y-1">
         <h3 className="text-sm font-medium">상위 이슈</h3>
         {issue.parentIssue ? (
-          <div onClick={() => onSelectIssue(issue.parentIssue!)}>
-            <IssueInfo issue={issue.parentIssue} />
-          </div>
+          <IssueRefInfo issueRef={issue.parentIssue} onSelectIssue={onSelectIssue} />
         ) : (
           <div className="text-sm text-muted-foreground italic">Not set</div>
         )}
@@ -356,9 +382,7 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
         {issue.subIssues && issue.subIssues.length > 0 ? (
           <div className="space-y-1">
             {issue.subIssues.map((subIssue) => (
-              <div key={subIssue.id} onClick={() => onSelectIssue(subIssue)}>
-                <IssueInfo issue={subIssue} />
-              </div>
+              <IssueRefInfo key={subIssue.id} issueRef={subIssue} onSelectIssue={onSelectIssue} />
             ))}
           </div>
         ) : (
@@ -372,9 +396,7 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
         {issue.relatedIssues && issue.relatedIssues.length > 0 ? (
           <div className="space-y-1">
             {issue.relatedIssues.map((relatedIssue) => (
-              <div key={relatedIssue.id} onClick={() => onSelectIssue(relatedIssue)}>
-                <IssueInfo issue={relatedIssue} />
-              </div>
+              <IssueRefInfo key={relatedIssue.id} issueRef={relatedIssue} onSelectIssue={onSelectIssue} />
             ))}
           </div>
         ) : (

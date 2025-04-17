@@ -1,4 +1,5 @@
 import { LoginedUserInfo } from "@/store/useUserStore"
+import { Issue } from "./issue"
 
 export interface ProjectRequest {
   title: string
@@ -89,28 +90,28 @@ export const priorityLabels: Record<Priority, string> = {
   LOW: '낮음'
 }
 
-export interface Issue {
-  id: number
-  type: IssueType
-  status: IssueStatus
-  priority: Priority
-  title: string
-  subTitle: string
-  creator: LoginedUserInfo
-  assignee: LoginedUserInfo[]
-  createdDate: Date
-  updatedDate: Date
-  dueDate: Date
-  startDate: Date
-  endDate: Date
-  description: string
-  tag: string[]
-  parentProject: ProjectRef
-  parentIssue: IssueRef
-  subIssues: IssueRef[]
-  relatedIssues: IssueRef[]
-  isDeleted: boolean
-}
+// export interface Issue {
+//   id: number
+//   type: IssueType
+//   status: IssueStatus
+//   priority: Priority
+//   title: string
+//   subTitle: string
+//   creator: LoginedUserInfo
+//   assignee: LoginedUserInfo[]
+//   createdDate: Date
+//   updatedDate: Date
+//   dueDate: Date
+//   startDate: Date
+//   endDate: Date
+//   description: string
+//   tag: string[]
+//   parentProject: ProjectRef
+//   parentIssue: IssueRef
+//   subIssues: IssueRef[]
+//   relatedIssues: IssueRef[]
+//   isDeleted: boolean
+// }
 
 export interface ProjectRef {
   id: number
@@ -130,6 +131,6 @@ export interface IssueRef {
   priority: Priority
   creator: LoginedUserInfo
   assignee: LoginedUserInfo[]
-  subIssue: IssueRef[]
+  subIssues: IssueRef[]
 }
 

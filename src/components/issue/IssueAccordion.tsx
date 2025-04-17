@@ -14,6 +14,7 @@ import { ToggleIcon, getBgColor } from './icons'
 import { Issue } from '@/types/issue'
 import { useIssueStore } from '@/store/useIssueStore'
 import { useIssue } from '@/hooks/useIssue'
+import { IssueRef } from '@/types/project'
 
 /**
  * 이슈 아코디언 컴포넌트
@@ -23,6 +24,8 @@ import { useIssue } from '@/hooks/useIssue'
 export function IssueAccordion({ projectId }: { projectId: number }) {
   const { selectedIssue, setSelectedIssue, clearSelectedIssue } = useIssueStore()
   const { issues, isIssuesLoading } = useIssue(projectId)
+
+  console.log('issues', issues)
 
   // 이슈 선택 핸들러
   const handleSelectIssue = (issue: Issue) => {
@@ -65,7 +68,7 @@ export function IssueAccordion({ projectId }: { projectId: number }) {
  * 이슈를 계층 구조로 표시하는 이슈 노드 컴포넌트
  * 하위 이슈가 있는 경우 아코디언으로 표시하고, 없는 경우 단순 아이템으로 표시
  */
-function IssueNode({ issue, level, onSelectIssue }: { issue: Issue; level: number; onSelectIssue: (issue: Issue) => void }) {
+function IssueNode({ issue, level, onSelectIssue }: { issue: Issue | IssueRef; level: number; onSelectIssue: (issue: Issue) => void }) {
   // 아코디언 열림/닫힘 상태 관리
   const [isOpen, setIsOpen] = useState(false)
   // 하위 이슈 존재 여부 확인
@@ -95,7 +98,7 @@ function IssueNode({ issue, level, onSelectIssue }: { issue: Issue; level: numbe
   if (!hasChildren) {
     return (
       <div className={nodeClass} style={nodeStyle}>
-        <IssueInfo issue={issue} onClick={() => onSelectIssue(issue)} />
+        <IssueInfo issue={issue} onClick={() => onSelectIssue(issue as Issue)} />
       </div>
     )
   }
@@ -110,22 +113,35 @@ function IssueNode({ issue, level, onSelectIssue }: { issue: Issue; level: numbe
             isOpen={isOpen}
             onClick={toggleAccordion}
             onSelectIssue={onSelectIssue}
-            issue={issue}
+            issue={issue as Issue}
           >
-            <IssueInfo issue={issue} onClick={() => onSelectIssue(issue)} />
+            <IssueInfo issue={issue as Issue} onClick={() => onSelectIssue(issue as Issue)} />
           </CustomAccordionTrigger>
         </div>
         <AccordionContent className="pt-1 pb-0 px-0 overflow-visible">
           {hasChildren && (
             <div className="space-y-1">
               {issue.subIssues!.map((child) => (
-                <IssueNode key={child.id} issue={child} level={level + 1} onSelectIssue={onSelectIssue} />
+                <ChildIssueNode key={child.id} issueRef={child} level={level + 1} onSelectIssue={onSelectIssue} />
               ))}
             </div>
           )}
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  )
+}
+
+function ChildIssueNode({ issueRef, level, onSelectIssue }: { issueRef: IssueRef; level: number; onSelectIssue: (issue: Issue) => void }) {
+  const { issue: issueData, isIssueLoading } = useIssue(null, issueRef.id)
+
+  if (isIssueLoading) return <div className="text-sm text-muted-foreground">Loading...</div>
+  if (!issueData) return <div className="text-sm text-muted-foreground">Issue not found</div>
+
+  return (
+    <>
+      <IssueNode key={issueData.id} issue={issueData} level={level + 1} onSelectIssue={onSelectIssue} />
+    </>
   )
 }
 
