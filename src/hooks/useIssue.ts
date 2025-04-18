@@ -114,8 +114,8 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
   })
 
   return {
-    issues,
-    searchIssues,
+    issues: issues || [],
+    searchIssues: searchIssues || [],
     issue,
     isIssuesLoading,
     isIssueLoading,

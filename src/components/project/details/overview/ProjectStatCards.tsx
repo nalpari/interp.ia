@@ -1,15 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Issue } from '@/types/issue'
+import { DEFAULT_ISSUE_LIST_REQUEST, Issue, IssueCategory, IssueListRequest, IssueStatus } from '@/types/issue'
 import { useIssue } from '@/hooks/useIssue'
+import { format } from 'date-fns'
 import { useHistory } from '@/hooks/useHistory'
-import { IssueCategory, IssueStatus } from '@/types/issue'
-import { History } from '@/types/history'
 
 export default function ProjectStatCards({ projectId }: { projectId: number }) {
-  const { issues: issuesData } = useIssue(projectId)
-  const { childHistorys } = useHistory(IssueCategory.PROJECT, projectId)
-  const issues = issuesData || []
-
   // 날짜 계산 유틸리티
   const getDateRange = () => {
     const today = new Date()
@@ -24,6 +19,19 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
     return { today, sevenDaysToNow, sevenDaysFromNow }
   }
 
+  const { today, sevenDaysToNow, sevenDaysFromNow } = getDateRange()
+
+  const issueListRequest: IssueListRequest = {
+    ...DEFAULT_ISSUE_LIST_REQUEST,
+    projectId: projectId,
+    updateDateFrom: format(sevenDaysToNow, 'yyyy-MM-dd'),
+    updateDateTo: format(today, 'yyyy-MM-dd'),
+  }
+
+  const { issues, searchIssues } = useIssue(projectId, null, issueListRequest)
+  const { historys } = useHistory(IssueCategory.PROJECT, projectId)
+
+
   // 필터링 유틸리티
   const filterByDateRange = (date: string | Date | null, startDate: Date, endDate: Date) => {
     if (!date) return false
@@ -32,21 +40,15 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
     return targetDate >= startDate && targetDate <= endDate
   }
 
-  const { today, sevenDaysToNow, sevenDaysFromNow } = getDateRange()
-
   // 통계 계산
   const stats = {
     willBeCompletedIssues: issues.filter((issue: Issue) => filterByDateRange(issue.dueDate, today, sevenDaysFromNow)),
 
     createdIssues: issues.filter((issue: Issue) => filterByDateRange(issue.createdDate, sevenDaysToNow, today)),
 
-    childIssueUpdates: childHistorys.filter((history: History) => filterByDateRange(history.modifiedDate, sevenDaysToNow, today)),
-
-    doneIssues: childHistorys.filter(
-      (history: History) =>
-        history.fieldName === 'status' && history.afterValue === IssueStatus.DONE && filterByDateRange(history.modifiedDate, sevenDaysToNow, today),
-    ),
+    completedIssues: searchIssues.filter((issue: Issue) => issue.status === IssueStatus.DONE),
   }
+
 
   return (
     <div className="grid grid-cols-4 gap-4">
@@ -55,7 +57,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.doneIssues.length}개 완료함</div>
+          <div className="text-2xl font-bold">{stats.completedIssues.length}개 완료함</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">
@@ -63,7 +65,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.childIssueUpdates.length}개 업데이트함</div>
+          <div className="text-2xl font-bold">{historys.length + searchIssues.length}개 업데이트함</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">

@@ -19,21 +19,8 @@ export function useHistory(referenceType: IssueCategory, referenceId: number) {
     },
     enabled: !!referenceType && !!referenceId,
   })
-  const { data: childHistorys } = useQuery({
-    queryKey: ['childHistory', referenceType, referenceId],
-    queryFn: async () => {
-      const response = await axios.get(`/api/histories`, {
-        params: {
-          projectId: referenceId,
-        },
-      })
-      return response.data
-    },
-    enabled: !!referenceType && !!referenceId,
-  })
 
   return {
-    childHistorys: childHistorys || [],
     historys: historys || [],
     isHistoryLoading,
   }

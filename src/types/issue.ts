@@ -93,16 +93,16 @@ export type IssueListRequest = {
   subTitle: string | null
   creatorId: number | null
   assigneeId: number[] | null
-  createDateFrom: Date | null
-  createDateTo: Date | null
-  updateDateFrom: Date | null
-  updateDateTo: Date | null
-  dueDateFrom: Date | null
-  dueDateTo: Date | null
-  startDateFrom: Date | null
-  startDateTo: Date | null
-  endDateFrom: Date | null
-  endDateTo: Date | null
+  createDateFrom: string | null
+  createDateTo: string | null
+  updateDateFrom: string | null
+  updateDateTo: string | null
+  dueDateFrom: string | null
+  dueDateTo: string | null
+  startDateFrom: string | null
+  startDateTo: string | null
+  endDateFrom: string | null
+  endDateTo: string | null
 }
 
 export const DEFAULT_ISSUE_LIST_REQUEST = {
