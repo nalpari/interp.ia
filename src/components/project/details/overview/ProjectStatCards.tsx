@@ -36,16 +36,16 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
 
   // 통계 계산
   const stats = {
-    willBeCompletedIssues: issues.filter((issue: Issue) => filterByDateRange(issue.dueDate, today, sevenDaysFromNow)).length,
+    willBeCompletedIssues: issues.filter((issue: Issue) => filterByDateRange(issue.dueDate, today, sevenDaysFromNow)),
 
-    createdIssues: issues.filter((issue: Issue) => filterByDateRange(issue.createdDate, sevenDaysToNow, today)).length,
+    createdIssues: issues.filter((issue: Issue) => filterByDateRange(issue.createdDate, sevenDaysToNow, today)),
 
-    childIssueUpdates: childHistorys.filter((history: History) => filterByDateRange(history.modifiedDate, sevenDaysToNow, today)).length,
+    childIssueUpdates: childHistorys.filter((history: History) => filterByDateRange(history.modifiedDate, sevenDaysToNow, today)),
 
     doneIssues: childHistorys.filter(
       (history: History) =>
         history.fieldName === 'status' && history.afterValue === IssueStatus.DONE && filterByDateRange(history.modifiedDate, sevenDaysToNow, today),
-    ).length,
+    ),
   }
 
   return (
@@ -55,7 +55,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.doneIssues}개 완료함</div>
+          <div className="text-2xl font-bold">{stats.doneIssues.length}개 완료함</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">
@@ -63,7 +63,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.childIssueUpdates}개 업데이트함</div>
+          <div className="text-2xl font-bold">{stats.childIssueUpdates.length}개 업데이트함</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">
@@ -71,7 +71,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.createdIssues}개 만듦</div>
+          <div className="text-2xl font-bold">{stats.createdIssues.length}개 만듦</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">
@@ -79,7 +79,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">다음 7일 이내</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.willBeCompletedIssues}개 마감 예정</div>
+          <div className="text-2xl font-bold">{stats.willBeCompletedIssues.length}개 마감 예정</div>
         </CardContent>
       </Card>
     </div>

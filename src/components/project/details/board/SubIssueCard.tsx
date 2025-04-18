@@ -4,10 +4,6 @@ import { useDrag } from 'react-dnd'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export default function SubIssueCard({ issue, onSelectIssue }: { issue: Issue; onSelectIssue: (issue: Issue) => void }) {
-  const formattedDueDate = issue.dueDate
-    ? new Date(issue.dueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
-    : 'No due date'
-
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'issue',
     item: { id: issue.id },
@@ -23,7 +19,7 @@ export default function SubIssueCard({ issue, onSelectIssue }: { issue: Issue; o
         className={`bg-white dark:bg-gray-800 rounded-md p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
           isDragging ? 'opacity-50' : ''
         }`}
-        title={`기한날짜: ${formattedDueDate}`}
+        title={issue.title}
         onClick={() => onSelectIssue(issue)}
       >
         <div className="flex justify-between items-center">
