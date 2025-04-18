@@ -1,5 +1,5 @@
 import { Project, statusColors } from '@/types/project'
-import { Issue, IssueRequest } from '@/types/issue'
+import { DEFAULT_ISSUE_LIST_REQUEST, Issue, IssueListRequest, IssueRequest } from '@/types/issue'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import SubIssueCard from './SubIssueCard'
@@ -14,7 +14,14 @@ import { Card } from '@/components/ui/card'
 import { IssueCreateForm } from '@/components/issue/IssueCreateForm'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 export default function ProjectBoard({ project }: { project: Project }) {
-  const { issues, updateIssue } = useIssue(project.id)
+  const [issueListRequest, setIssueListRequest] = useState<IssueListRequest>({
+    ...DEFAULT_ISSUE_LIST_REQUEST,
+    projectId: project.id,
+  })
+
+  const { searchIssues, updateIssue } = useIssue(project.id, null, issueListRequest)
+  console.log('searchIssues', searchIssues)
+
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
 
   const handleDrop = (issueId: number, newStatus: string) => {
@@ -30,7 +37,7 @@ export default function ProjectBoard({ project }: { project: Project }) {
               key={status}
               status={status}
               color={color}
-              issues={issues?.filter((issue: Issue) => issue.status === status) || []}
+              issues={searchIssues?.filter((issue: Issue) => issue.status === status) || []}
               onDrop={handleDrop}
               issueCount={project.subIssues?.filter((issue) => issue.status === status).length || 0}
               onSelectIssue={setSelectedIssue}
@@ -43,12 +50,10 @@ export default function ProjectBoard({ project }: { project: Project }) {
       {selectedIssue && (
         <TooltipProvider>
           <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setSelectedIssue(null)}>
-            {/* 오른쪽 패널 - 전체 화면 높이, 스크롤 가능한 영역 포함 */}
             <div
               className="absolute right-0 top-0 bottom-0 w-1/2 bg-background border-l shadow-lg flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* 이 div가 실제 스크롤 가능한 영역 */}
               <div className="h-full overflow-y-auto">
                 <Card className="p-2">
                   <IssueDetail issue={selectedIssue} onSelectIssue={setSelectedIssue} onClose={() => setSelectedIssue(null)} />
@@ -111,11 +116,7 @@ function StatusColumn({ status, color, issues, onDrop, issueCount, onSelectIssue
             <DialogHeader>
               <DialogTitle>Add Issue</DialogTitle>
             </DialogHeader>
-            <IssueCreateForm 
-              parentIssue={null} 
-              onSubmit={handleCreateIssue} 
-              parentProjectId={projectId} 
-            />
+            <IssueCreateForm parentIssue={null} onSubmit={handleCreateIssue} parentProjectId={projectId} />
           </DialogContent>
         </Dialog>
       </div>

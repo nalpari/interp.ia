@@ -82,3 +82,46 @@ export type IssueRequest = {
   parentIssueId: number | null
   relatedIssuesId: number[] | null
 }
+
+export type IssueListRequest = {
+  projectId: number | null
+  parentIssueId: number | null
+  issueId: number | null
+  status: IssueStatus | null
+  priority: IssuePriority | null
+  title: string | null
+  subTitle: string | null
+  creatorId: number | null
+  assigneeId: number[] | null
+  createDateFrom: Date | null
+  createDateTo: Date | null
+  updateDateFrom: Date | null
+  updateDateTo: Date | null
+  dueDateFrom: Date | null
+  dueDateTo: Date | null
+  startDateFrom: Date | null
+  startDateTo: Date | null
+  endDateFrom: Date | null
+  endDateTo: Date | null
+}
+
+export const DEFAULT_ISSUE_LIST_REQUEST = {
+  status: null,
+  priority: null,
+  title: null,
+  subTitle: null,
+  creatorId: null,
+  assigneeId: null,
+  createDateFrom: null,
+  createDateTo: null,
+  updateDateFrom: null,
+  updateDateTo: null,
+  dueDateFrom: null,
+  dueDateTo: null,
+  startDateFrom: null,
+  startDateTo: null,
+  endDateFrom: null,
+  endDateTo: null,
+  parentIssueId: null,
+  issueId: null,
+} as const

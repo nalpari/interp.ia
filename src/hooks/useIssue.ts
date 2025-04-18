@@ -1,9 +1,9 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Issue, IssueRequest } from '@/types/issue'
+import { IssueListRequest, IssueRequest } from '@/types/issue'
 
-export function useIssue(projectId?: number | null, issueId?: number | null) {
+export function useIssue(projectId?: number | null, issueId?: number | null, issueListRequest?: IssueListRequest) {
   const queryClient = useQueryClient()
 
   // 이슈 목록 조회
@@ -15,6 +15,29 @@ export function useIssue(projectId?: number | null, issueId?: number | null) {
       return response.json()
     },
     enabled: !!projectId,
+  })
+  // 이슈 검색 목록 조회
+  const { data: searchIssues, isLoading: isSearchIssuesLoading } = useQuery({
+    queryKey: ['searchIssues', issueListRequest],
+    queryFn: async () => {
+      const params = new URLSearchParams()
+      if (issueListRequest) {
+        Object.entries(issueListRequest).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            params.append(key, value.toString())
+          }
+        })
+      }
+      
+      const response = await fetch(`/api/issue/search?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return response.json()
+    },
+    enabled: !!issueListRequest,
   })
 
   // 이슈 상세 조회
@@ -42,7 +65,11 @@ export function useIssue(projectId?: number | null, issueId?: number | null) {
       return response.json()
     },
     onSuccess: () => {
+      // issue query 무효화
       queryClient.invalidateQueries({ queryKey: ['issues'] })
+      // history query 무효화
+      queryClient.invalidateQueries({ queryKey: ['history'] })
+      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 
@@ -59,8 +86,13 @@ export function useIssue(projectId?: number | null, issueId?: number | null) {
       return response.json()
     },
     onSuccess: (_, { issueId }) => {
+      // issue query 무효화
       queryClient.invalidateQueries({ queryKey: ['issues'] })
       queryClient.invalidateQueries({ queryKey: ['issue', issueId] })
+      queryClient.invalidateQueries({ queryKey: ['searchIssues', issueListRequest] })
+      // history query 무효화
+      queryClient.invalidateQueries({ queryKey: ['history'] })
+      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 
@@ -73,15 +105,21 @@ export function useIssue(projectId?: number | null, issueId?: number | null) {
       return response.json()
     },
     onSuccess: () => {
+      // issue query 무효화
       queryClient.invalidateQueries({ queryKey: ['issues'] })
+      // history query 무효화
+      queryClient.invalidateQueries({ queryKey: ['history'] })
+      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 
   return {
     issues,
+    searchIssues,
     issue,
     isIssuesLoading,
     isIssueLoading,
+    isSearchIssuesLoading,
     createIssue: createIssueMutation,
     updateIssue: updateIssueMutation,
     deleteIssue: deleteIssueMutation,

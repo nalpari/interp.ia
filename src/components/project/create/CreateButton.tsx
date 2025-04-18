@@ -20,7 +20,7 @@ const initialFormData: ProjectRequest = {
   startDate: '',
   endDate: '',
   tag: [],
-  subIssuesId: []
+  subIssuesId: [],
 }
 
 interface CreateButtonProps {
@@ -32,15 +32,16 @@ export default function CreateButton({ project, updateProjectMutation }: CreateB
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const {
-    mutate: createProjectMutation,
-    isPending,
-  } = useMutation({
+  const { mutate: createProjectMutation, isPending } = useMutation({
     mutationFn: createProjectApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['project', 'list'] })
+      // project 목록 조회 무효화
+      queryClient.invalidateQueries({ queryKey: ['project', 'list'] })
+      // history 조회 무효화
+      queryClient.invalidateQueries({ queryKey: ['history'] })
+      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
       setOpen(false)
-    }
+    },
   })
 
   const handleOpenChange = (value: boolean) => {
@@ -80,11 +81,7 @@ export default function CreateButton({ project, updateProjectMutation }: CreateB
         <DialogHeader>
           <DialogTitle>{project ? 'Edit' : 'Create New'} project</DialogTitle>
         </DialogHeader>
-        <ProjectForm 
-          project={project} 
-          updateProjectMutation={updateProjectMutation}
-          onSubmit={handleSubmit}
-        />
+        <ProjectForm project={project} updateProjectMutation={updateProjectMutation} onSubmit={handleSubmit} />
       </DialogContent>
     </Dialog>
   )

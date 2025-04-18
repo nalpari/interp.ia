@@ -16,6 +16,7 @@ export async function GET(request: Request) {
   return NextResponse.json(response.data)
 }
 
+
 // 이슈 생성
 export async function POST(request: Request) {
   try {

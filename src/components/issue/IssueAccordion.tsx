@@ -25,6 +25,8 @@ export function IssueAccordion({ projectId }: { projectId: number }) {
   const { selectedIssue, setSelectedIssue, clearSelectedIssue } = useIssueStore()
   const { issues, isIssuesLoading } = useIssue(projectId)
 
+  console.log('issues', issues)
+
   // 이슈 선택 핸들러
   const handleSelectIssue = (issue: Issue) => {
     setSelectedIssue(issue)
