@@ -18,7 +18,7 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
   })
   // 이슈 검색 목록 조회
   const { data: searchIssues, isLoading: isSearchIssuesLoading } = useQuery({
-    queryKey: ['searchIssues', issueListRequest],
+    queryKey: ['searchIssues', projectId, issueListRequest],
     queryFn: async () => {
       const params = new URLSearchParams()
       if (issueListRequest) {
@@ -28,7 +28,7 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
           }
         })
       }
-      
+
       const response = await fetch(`/api/issue/search?${params.toString()}`, {
         method: 'GET',
         headers: {
@@ -54,7 +54,6 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
   // 이슈 생성
   const { mutate: createIssueMutation } = useMutation({
     mutationFn: async (issue: IssueRequest) => {
-      console.log('issue at hook', issue)
       const response = await fetch('/api/issue', {
         method: 'POST',
         headers: {
@@ -69,7 +68,6 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
       queryClient.invalidateQueries({ queryKey: ['issues'] })
       // history query 무효화
       queryClient.invalidateQueries({ queryKey: ['history'] })
-      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 
@@ -87,12 +85,11 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
     },
     onSuccess: (_, { issueId }) => {
       // issue query 무효화
-      queryClient.invalidateQueries({ queryKey: ['issues'] })
+      queryClient.invalidateQueries({ queryKey: ['issues', projectId] })
       queryClient.invalidateQueries({ queryKey: ['issue', issueId] })
-      queryClient.invalidateQueries({ queryKey: ['searchIssues', issueListRequest] })
+      queryClient.invalidateQueries({ queryKey: ['searchIssues', projectId] })
       // history query 무효화
       queryClient.invalidateQueries({ queryKey: ['history'] })
-      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 
@@ -109,7 +106,6 @@ export function useIssue(projectId?: number | null, issueId?: number | null, iss
       queryClient.invalidateQueries({ queryKey: ['issues'] })
       // history query 무효화
       queryClient.invalidateQueries({ queryKey: ['history'] })
-      queryClient.invalidateQueries({ queryKey: ['childHistory'] })
     },
   })
 

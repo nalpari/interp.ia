@@ -31,7 +31,6 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
   const { issues, searchIssues } = useIssue(projectId, null, issueListRequest)
   const { historys } = useHistory(IssueCategory.PROJECT, projectId)
 
-
   // 필터링 유틸리티
   const filterByDateRange = (date: string | Date | null, startDate: Date, endDate: Date) => {
     if (!date) return false
@@ -46,7 +45,12 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
 
     createdIssues: issues.filter((issue: Issue) => filterByDateRange(issue.createdDate, sevenDaysToNow, today)),
 
-    completedIssues: searchIssues.filter((issue: Issue) => issue.status === IssueStatus.DONE),
+    completedIssues: searchIssues.filter((issue: Issue) => 
+      issue.status === IssueStatus.DONE && 
+      filterByDateRange(issue.updatedDate, sevenDaysToNow, today)
+    ),
+
+    updatedIssues: searchIssues.filter((issue: Issue) => filterByDateRange(issue.updatedDate, sevenDaysToNow, today)),
   }
 
 
@@ -65,7 +69,7 @@ export default function ProjectStatCards({ projectId }: { projectId: number }) {
           <CardTitle className="text-sm font-medium text-muted-foreground">지난 7일간</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{historys.length + searchIssues.length}개 업데이트함</div>
+          <div className="text-2xl font-bold">{historys.length + stats.updatedIssues.length}개 업데이트함</div>
         </CardContent>
       </Card>
       <Card className="bg-white dark:bg-gray-800">

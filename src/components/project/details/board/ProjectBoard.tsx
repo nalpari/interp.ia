@@ -20,7 +20,6 @@ export default function ProjectBoard({ project }: { project: Project }) {
   })
 
   const { searchIssues, updateIssue } = useIssue(project.id, null, issueListRequest)
-  console.log('searchIssues', searchIssues)
 
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null)
 
