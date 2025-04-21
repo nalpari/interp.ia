@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { CalendarIcon, CloseIcon } from './icons'
-import { IssueInfo } from './IssueInfo'
+import { AddSubIssueButton, IssueInfo } from './IssueInfo'
 import { IssueBadge } from './IssueBadge'
 
 import { cn } from '@/libs/utils'
@@ -343,7 +343,7 @@ function IssueRefInfo({ issueRef, onSelectIssue }: { issueRef: IssueRef; onSelec
 
   return (
     <div className="cursor-pointer hover:bg-muted/50" onClick={handleClick}>
-      <IssueInfo issue={issueData} />
+      <IssueInfo issue={issueData} showTooltip={false} />
     </div>
   )
 }
@@ -360,7 +360,7 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
             className="cursor-pointer hover:bg-muted/50"
             onClick={() => onSelectIssue({ ...issue.parentProject, type: IssueType.PROJECT } as unknown as Issue)}
           >
-            <IssueInfo issue={{ ...issue.parentProject, type: IssueType.PROJECT } as unknown as Issue} />
+            <IssueInfo issue={{ ...issue.parentProject, type: IssueType.PROJECT } as unknown as Issue} showTooltip={false} />
           </div>
         ) : (
           <div className="text-sm text-muted-foreground italic">Not set</div>
@@ -379,7 +379,10 @@ function IssueRelations({ issue, onSelectIssue }: { issue: Issue; onSelectIssue:
 
       {/* 하위 이슈 */}
       <div className="space-y-1">
-        <h3 className="text-sm font-medium">하위 이슈</h3>
+        <h3 className="text-sm font-medium">
+          하위 이슈 <AddSubIssueButton issue={issue} />
+        </h3>
+
         {issue.subIssues && issue.subIssues.length > 0 ? (
           <div className="space-y-1">
             {issue.subIssues.map((subIssue) => (
@@ -419,7 +422,7 @@ export function IssueDetail({
   onClose: () => void
   onSelectIssue: (issue: Issue) => void
 }) {
-  const { setSelectedIssue, updateIssueField } = useIssueStore()
+  const { updateIssueField } = useIssueStore()
   const { updateIssue, deleteIssue } = useIssue(projectId, issue.id)
 
   const loginedUserInfo = useUserStore((state) => state.loginedUserInfo)

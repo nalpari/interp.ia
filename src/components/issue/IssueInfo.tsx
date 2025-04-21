@@ -9,11 +9,11 @@ import { IssueBadge } from './IssueBadge'
 import { MoreIcon } from './icons'
 import { Button } from '../ui/button'
 import { Plus } from 'lucide-react'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog'
 
 import { cn } from '@/libs/utils'
 
-import { Issue, IssueRequest, UserType, IssueStatus, IssuePriority } from '@/types/issue'
+import { Issue, IssueRequest, UserType } from '@/types/issue'
 import { IssueRef } from '@/types/project'
 import { IssueCreateForm } from './IssueCreateForm'
 import { useIssue } from '@/hooks/useIssue'
@@ -63,19 +63,9 @@ function Assignees({ users }: { users: UserType[] }) {
 }
 
 /**
- * 이슈 컴포넌트
+ * 하위 이슈 추가 버튼 컴포넌트
  */
-export function IssueInfo({
-  issue,
-  className,
-  onClick,
-  hideStatus = false,
-}: {
-  issue: Issue | IssueRef
-  className?: string
-  onClick?: () => void
-  hideStatus?: boolean
-}) {
+export function AddSubIssueButton({ issue, showOnHover = false }: { issue: Issue | IssueRef; showOnHover?: boolean }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { createIssue } = useIssue(null, issue.id)
 
@@ -89,24 +79,56 @@ export function IssueInfo({
     setIsDialogOpen(false)
   }
 
+  const buttonClassName = showOnHover
+    ? 'h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-2'
+    : 'h-8 w-8 opacity-100 transition-opacity duration-200 mr-2'
+
+  return (
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" className={buttonClassName} onClick={handleAddSubIssue}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>하위 이슈 추가</p>
+        </TooltipContent>
+      </Tooltip>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Issue</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <IssueCreateForm parentIssue={issue as Issue} onSubmit={handleSubmit} parentProjectId={null} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+/**
+ * 이슈 컴포넌트
+ */
+export function IssueInfo({
+  issue,
+  className,
+  onClick,
+  hideStatus = false,
+  showTooltip = true,
+}: {
+  issue: Issue | IssueRef
+  className?: string
+  onClick?: () => void
+  hideStatus?: boolean
+  showTooltip?: boolean
+}) {
   return (
     <>
       <div className={cn('flex items-center w-full h-10 group', className)} onClick={onClick}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-2"
-              onClick={handleAddSubIssue}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>하위 이슈 추가</p>
-          </TooltipContent>
-        </Tooltip>
+        {showTooltip && <AddSubIssueButton issue={issue} showOnHover={true} />}
         <IssueBadge type="type" value={issue.type} />
         <Badge variant="outline" className="mr-2 px-1 text-xs">
           #{issue.id}
@@ -124,17 +146,6 @@ export function IssueInfo({
           </div>
         )}
       </div>
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Issue</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <IssueCreateForm parentIssue={issue as Issue} onSubmit={handleSubmit} parentProjectId={null} />
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
