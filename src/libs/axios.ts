@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
     const accessToken = session.accessToken
 
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
+      config.headers.accesstoken = `Bearer ${accessToken}`
     }
 
     return config
@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
         const response = await axios.post(`${baseURL}/auth/refresh`, null, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${refreshToken}`,
+            'refreshtoken': `Bearer ${refreshToken}`,
           },
         })
 
@@ -69,7 +69,7 @@ axiosInstance.interceptors.response.use(
         await session.save()
 
         // 실패한 요청의 헤더를 새로운 access token으로 업데이트
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+        originalRequest.headers.accesstoken = `Bearer ${newAccessToken}`
 
         // 실패한 요청을 새로운 access token으로 재시도
         return axiosInstance(originalRequest)

@@ -20,11 +20,11 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
     queryKey: ['login', 'save-session'],
     queryFn: async () => {
       try {
-        const result = await axios.post('http://localhost:8080/login', { email, password })
+        const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, { email, password })
         const response = await axios.post('/api/auth', {
           email,
-          accessToken: result.headers.authorization,
-          refreshToken: result.headers['authorization-refresh'],
+          accessToken: result.headers.accesstoken,
+          refreshToken: result.headers.refreshtoken,
           isLoggedIn: true,
         })
         if (response.status === 200) {

@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request, { params }: { params: { issueId: string } }) {
   const { issueId } = params
 
-  const response = await axiosInstance.get(`http://localhost:8080/api/issues/${issueId}`)
+  const response = await axiosInstance.get(`/api/issues/${issueId}`)
   return NextResponse.json(response.data)
 }
 
@@ -18,7 +18,7 @@ export async function PATCH(request: Request, { params }: { params: { issueId: s
     return NextResponse.json({ error: 'Field and value are required' }, { status: 400 })
   }
 
-  const response = await axiosInstance.patch(`http://localhost:8080/api/issues/${issueId}`, {
+  const response = await axiosInstance.patch(`/api/issues/${issueId}`, {
     [updateField]: updateValue,
   })
   return NextResponse.json(response.data)
