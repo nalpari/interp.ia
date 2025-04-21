@@ -7,16 +7,16 @@ export async function GET(request: Request) {
   const isActive = searchParams.get('isActive')
 
   if (email) {
-    const response = await axiosInstance.get(`http://localhost:8080/api/users/${email}`)
+    const response = await axiosInstance.get(`/api/users/${email}`)
     return NextResponse.json({ data: response.data })
   }
 
   if (isActive) {
-    const response = await axiosInstance.get(`http://localhost:8080/api/users?isActive=${isActive}`)
+    const response = await axiosInstance.get(`/api/users?isActive=${isActive}`)
     return NextResponse.json({ data: response.data })
   }
 
-  const response = await axiosInstance.get(`http://localhost:8080/api/users`)
+  const response = await axiosInstance.get(`/api/users`)
   return NextResponse.json({ data: response.data })
 }
 
@@ -30,7 +30,7 @@ export async function PUT(request: Request) {
     phone,
   }
 
-  const response = await axiosInstance.put(`http://localhost:8080/api/users`, data)
+  const response = await axiosInstance.put(`/api/users`, data)
 
   return NextResponse.json({ data })
 }
